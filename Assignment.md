@@ -313,52 +313,989 @@ print(result)
 ```
 
 ## 17. Write a Python function to remove duplicate elements from a list. *(Argument: list)*
+```
+def unique_list(list1):
+    new_list = []
+    
+    for i in list1:
+        if i not in new_list:
+            new_list.append(i)
+    
+    return new_list
+
+
+
+n = int(input("enter the size of the list : "))
+l1 = []
+for i in range(n):
+    l1.append(int(input(f"enter the value{i+1} : ")))
+
+result = unique_list(l1)
+
+print(result)
+```
 
 ## 18. Write a Python function to sort a list and return the sorted list. *(Argument: list)*
 
+#using sorted method
+```
+def sorted_list(list1):
+    new_list = []
+    new_list = sorted(list1)
+    return new_list
+
+n = int(input("enter the size of the list : "))
+l1 = []
+for i in range(n):
+    l1.append(int(input(f"enter the value{i+1} : ")))
+
+result = sorted_list(l1)
+print(result)
+```
+#using sort method
+
+```
+def sorted_list(list1):
+    list1.sort()
+    return list1
+        
+
+n = int(input("enter the size of the list : "))
+l1 = []
+for i in range(n):
+    l1.append(int(input(f"enter the value{i+1} : ")))
+
+result = sorted_list(l1)
+print(result)
+```
+#using for loop
+
+```
+def sorted_list(list1):
+    n = len(list1)
+    for i in range(n):
+        for j in range(n-i-1):
+            if list1[j]>list1[j+1]:
+                list1[j],list1[j+1] = list1[j+1],list1[j]
+    return list1
+        
+
+n = int(input("enter the size of the list : "))
+l1 = []
+for i in range(n):
+    l1.append(int(input(f"enter the value{i+1} : ")))
+
+result = sorted_list(l1)
+print(result)
+```
 ## 19. Write a Python function to generate prime numbers in a given range. *(Arguments: \*args)*
 
+#using start and end 
+```
+def prime_in_range(*args):
+    
+    start,end = args
+    for num in range(start, end+1):
+        if  num < 1:
+            continue
+        is_prime = True
+        
+        for i in range(2,int(num**0.5)+1):
+            if num%i == 0:
+                is_prime = False
+                break
+        if is_prime:
+            print(num)
+            
+    
+n1 = int(input("Enter the starting number: "))
+n2 = int(input("Enter the ending number: "))
+
+prime_in_range(n1, n2)
+
+```
+
+# Prime Number Programs
+
+## 1. Check if a Number is Prime (Normal)
+
+```
+def is_prime(num):
+    if num <= 1:
+        return False
+
+    for i in range(2, num):
+        if num % i == 0:
+            return False
+
+    return True
+
+
+num = int(input("Enter a number: "))
+
+if is_prime(num):
+    print("Prime Number")
+else:
+    print("Not a Prime Number")
+```
+
+---
+
+## 2. Check if a Number is Prime (Optimized using √n)
+
+```
+def is_prime(num):
+    if num <= 1:
+        return False
+
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+
+    return True
+
+
+num = int(input("Enter a number: "))
+
+if is_prime(num):
+    print("Prime Number")
+else:
+    print("Not a Prime Number")
+```
+
+---
+
+## 3. Print Prime Numbers from 1 to N
+
+```
+def prime_upto_n(n):
+
+    for num in range(2, n + 1):
+
+        is_prime = True
+
+        for i in range(2, int(num ** 0.5) + 1):
+            if num % i == 0:
+                is_prime = False
+                break
+
+        if is_prime:
+            print(num)
+
+
+n = int(input("Enter the value of N: "))
+
+prime_upto_n(n)
+```
+
+---
+
+## 4. Print Prime Numbers in a Given Range
+
+```
+def prime_in_range(start, end):
+
+    for num in range(start, end + 1):
+
+        if num <= 1:
+            continue
+
+        is_prime = True
+
+        for i in range(2, int(num ** 0.5) + 1):
+            if num % i == 0:
+                is_prime = False
+                break
+
+        if is_prime:
+            print(num)
+
+
+start = int(input("Enter the starting number: "))
+end = int(input("Enter the ending number: "))
+
+prime_in_range(start, end)
+```
+
+---
+
+## 5. Count Prime Numbers in a Given Range
+
+```
+def count_primes(start, end):
+
+    count = 0
+
+    for num in range(start, end + 1):
+
+        if num <= 1:
+            continue
+
+        is_prime = True
+
+        for i in range(2, int(num ** 0.5) + 1):
+            if num % i == 0:
+                is_prime = False
+                break
+
+        if is_prime:
+            count += 1
+
+    return count
+
+
+start = int(input("Enter the starting number: "))
+end = int(input("Enter the ending number: "))
+
+result = count_primes(start, end)
+
+print(result)
+```
+
+---
+
+## 6. Return/List of Prime Numbers in a Given Range
+
+```
+def prime_list(start, end):
+
+    primes = []
+
+    for num in range(start, end + 1):
+
+        if num <= 1:
+            continue
+
+        is_prime = True
+
+        for i in range(2, int(num ** 0.5) + 1):
+            if num % i == 0:
+                is_prime = False
+                break
+
+        if is_prime:
+            primes.append(num)
+
+    return primes
+
+
+start = int(input("Enter the starting number: "))
+end = int(input("Enter the ending number: "))
+
+result = prime_list(start, end)
+
+print(result)
+```
+
+---
+
+## 7. Sum of Prime Numbers in a Given Range
+
+```
+def sum_of_primes(start, end):
+
+    total = 0
+
+    for num in range(start, end + 1):
+
+        if num <= 1:
+            continue
+
+        is_prime = True
+
+        for i in range(2, int(num ** 0.5) + 1):
+            if num % i == 0:
+                is_prime = False
+                break
+
+        if is_prime:
+            total += num
+
+    return total
+
+
+start = int(input("Enter the starting number: "))
+end = int(input("Enter the ending number: "))
+
+result = sum_of_primes(start, end)
+
+print(result)
+```
+
+---
+
+## 8. Print the First N Prime Numbers
+
+```
+def first_n_primes(n):
+
+    count = 0
+    num = 2
+
+    while count < n:
+
+        is_prime = True
+
+        for i in range(2, int(num ** 0.5) + 1):
+            if num % i == 0:
+                is_prime = False
+                break
+
+        if is_prime:
+            print(num)
+            count += 1
+
+        num += 1
+
+
+n = int(input("Enter the value of N: "))
+
+first_n_primes(n)
+```
+
+---
+
+## 9. Find the Nth Prime Number
+
+```
+def nth_prime(n):
+
+    count = 0
+    num = 2
+
+    while True:
+
+        is_prime = True
+
+        for i in range(2, int(num ** 0.5) + 1):
+            if num % i == 0:
+                is_prime = False
+                break
+
+        if is_prime:
+            count += 1
+
+            if count == n:
+                return num
+
+        num += 1
+
+
+n = int(input("Enter the value of N: "))
+
+result = nth_prime(n)
+
+print(result)
+```
+
+---
+
+## 10. Print the Prime Factors of a Number
+
+```
+def prime_factors(num):
+
+    i = 2
+
+    while i <= num:
+
+        if num % i == 0:
+            print(i)
+            num = num // i
+        else:
+            i += 1
+
+
+num = int(input("Enter a number: "))
+
+prime_factors(num)
+```
 ## 20. Write a function `factorial(n)` that takes a non-negative integer `n` and returns its factorial.
+
+#using for loop
+
+```
+def factorial(n):
+
+    fact = 1
+
+    for i in range(1, n + 1):
+        fact *= i
+
+    return fact
+
+
+num = int(input("Enter a non-negative integer: "))
+
+result = factorial(num)
+
+print(result)
+```
+
+#using recursion
+
+```
+def factorial(n):
+
+    if n == 0 or n == 1:
+        return 1
+
+    return n * factorial(n - 1)
+
+
+num = int(input("Enter a non-negative integer: "))
+
+result = factorial(num)
+
+print(result)
+```
 
 ## 21. Write a function `is_palindrome(s)` that checks whether a given string is a palindrome.
 
+#using string slicing
+
+```
+def is_palindrome(str1):
+
+    if str1 == str1[::-1]:
+        return True
+
+    return False
+
+
+str1 = input("Enter a string: ")
+
+result = is_palindrome(str1)
+
+if result:
+    print("It is a Palindrome")
+else:
+    print("It is not a Palindrome")
+```
+
+#using for loop
+
+```
+def is_palindrome(str1):
+
+    rev = ""
+
+    for i in str1:
+        rev = i + rev
+
+    if str1 == rev:
+        return True
+
+    return False
+
+
+str1 = input("Enter a string: ")
+
+result = is_palindrome(str1)
+
+if result:
+    print("It is a Palindrome")
+else:
+    print("It is not a Palindrome")
+```
+
 ## 22. Write a function `fibonacci(n)` that returns the nth Fibonacci number.
 
+#using for loop (Iterative)
+
+```
+def fibonacci(n):
+
+    if n == 0:
+        return 0
+
+    elif n == 1:
+        return 1
+
+    first = 0
+    second = 1
+
+    for i in range(2, n + 1):
+        third = first + second
+        first = second
+        second = third
+
+    return second
+
+
+num = int(input("Enter the value of n: "))
+
+result = fibonacci(num)
+
+print(result)
+```
+
+#using recursion
+
+```
+def fibonacci(n):
+
+    if n == 0:
+        return 0
+
+    elif n == 1:
+        return 1
+
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+
+num = int(input("Enter the value of n: "))
+
+result = fibonacci(num)
+
+print(result)
+```
 ## 23. Write a function `sum_of_digits(n)` that calculates the sum of the digits of a non-negative integer.
+
+#using modulus and floor division
+
+```
+def sum_of_digits(num):
+
+    total = 0
+
+    while num > 0:
+        digit = num % 10
+        total += digit
+        num = num // 10
+
+    return total
+
+
+num = int(input("Enter a non-negative integer: "))
+
+result = sum_of_digits(num)
+
+print(result)
+```
+
+#using string conversion
+
+```
+def sum_of_digits(num):
+
+    total = 0
+
+    for digit in str(num):
+        total += int(digit)
+
+    return total
+
+
+num = int(input("Enter a non-negative integer: "))
+
+result = sum_of_digits(num)
+
+print(result)
+```
+#Using Recursion 
+
+```
+def sum_of_digits(num):
+
+    if num == 0:
+        return 0
+
+    return (num % 10) + sum_of_digits(num // 10)
+
+
+num = int(input("Enter a number: "))
+
+print(sum_of_digits(num))
+```
 
 ## 24. Write a function `count_vowels(s)` that counts the number of vowels in a given string.
 
+#using for loop
+
+```
+def count_vowels(str1):
+
+    count = 0
+
+    vowels = "aeiouAEIOU"
+
+    for ch in str1:
+        if ch in vowels:
+            count += 1
+
+    return count
+
+
+str1 = input("Enter a string: ")
+
+result = count_vowels(str1)
+
+print(result)
+```
+#Using Set
+
+```
+def count_vowels(str1):
+
+    count = 0
+
+    vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'}
+
+    for ch in str1:
+        if ch in vowels:
+            count += 1
+
+    return count
+
+
+str1 = input("Enter a string: ")
+
+print(count_vowels(str1))
+```
 ## 25. Write a function `sort_dict_by_value(d)` that takes a dictionary and returns a list of tuples sorted by dictionary values.
+```
+def get_value(item):
+    return item[1]
 
+
+def sort_dict_by_value(d):
+
+    return sorted(d.items(), key=get_value)
+
+
+n = int(input("Enter the number of key-value pairs: "))
+
+d = {}
+
+for i in range(n):
+    key = input(f"Enter key {i + 1}: ")
+    value = int(input(f"Enter value for {key}: "))
+    d[key] = value
+
+result = sort_dict_by_value(d)
+
+print(result)
+```
 ## 26. Write a function `merge_lists(lst1, lst2)` that merges two lists by alternating elements from each.
+
+#using min()
+
 ```
-def merge_list(l1,l2):
-    f = []
-    
-    if len(l1) >= len(l2):
-        for i in range(len(l1)):
-            if i <= len(l2)-1:
-                f.append(l1[i])
-                f.append(l2[i])
-            else:
-                f.append(l1[i])
-    else:
-        for i in range(len(l2)):
-            if i <= len(l1)-1:
-                f.append(l1[i])
-                f.append(l2[i])
-            else:
-                f.append(l2[i])
-    print(f)
-merge_list([0,2,4,6],[1,3,5])
-merge_list([0,2,4,6],[1,3,5,7]),
-merge_list([0,2,4,6],[1,3,5,7,9])
+def merge_lists(lst1, lst2):
+
+    result = []
+
+    min_length = min(len(lst1), len(lst2))
+
+    for i in range(min_length):
+        result.append(lst1[i])
+        result.append(lst2[i])
+
+    for i in range(min_length, len(lst1)):
+        result.append(lst1[i])
+
+    for i in range(min_length, len(lst2)):
+        result.append(lst2[i])
+
+    return result
+
+
+n1 = int(input("Enter the size of the first list: "))
+
+lst1 = []
+
+for i in range(n1):
+    lst1.append(int(input(f"Enter element {i + 1}: ")))
+
+
+n2 = int(input("Enter the size of the second list: "))
+
+lst2 = []
+
+for i in range(n2):
+    lst2.append(int(input(f"Enter element {i + 1}: ")))
+
+
+result = merge_lists(lst1, lst2)
+
+print(result)
 ```
 
+---
+
+#using if-else
+
+```
+def merge_lists(lst1, lst2):
+
+    result = []
+
+    if len(lst1) >= len(lst2):
+
+        for i in range(len(lst1)):
+            if i < len(lst2):
+                result.append(lst1[i])
+                result.append(lst2[i])
+            else:
+                result.append(lst1[i])
+
+    else:
+
+        for i in range(len(lst2)):
+            if i < len(lst1):
+                result.append(lst1[i])
+                result.append(lst2[i])
+            else:
+                result.append(lst2[i])
+
+    return result
+
+
+n1 = int(input("Enter the size of the first list: "))
+
+lst1 = []
+
+for i in range(n1):
+    lst1.append(int(input(f"Enter element {i + 1}: ")))
+
+
+n2 = int(input("Enter the size of the second list: "))
+
+lst2 = []
+
+for i in range(n2):
+    lst2.append(int(input(f"Enter element {i + 1}: ")))
+
+
+result = merge_lists(lst1, lst2)
+
+print(result)
+```
+
+---
+
+#using while loop
+
+```
+def merge_lists(lst1, lst2):
+
+    result = []
+
+    i = 0
+    j = 0
+
+    while i < len(lst1) and j < len(lst2):
+        result.append(lst1[i])
+        result.append(lst2[j])
+
+        i += 1
+        j += 1
+
+    while i < len(lst1):
+        result.append(lst1[i])
+        i += 1
+
+    while j < len(lst2):
+        result.append(lst2[j])
+        j += 1
+
+    return result
+
+
+n1 = int(input("Enter the size of the first list: "))
+
+lst1 = []
+
+for i in range(n1):
+    lst1.append(int(input(f"Enter element {i + 1}: ")))
+
+
+n2 = int(input("Enter the size of the second list: "))
+
+lst2 = []
+
+for i in range(n2):
+    lst2.append(int(input(f"Enter element {i + 1}: ")))
+
+
+result = merge_lists(lst1, lst2)
+
+print(result)
+```
 ## 27. Write a function `flatten(lst)` that takes a nested list and returns a flat list.
 
+#using nested for loop
+
+```
+def flatten(lst):
+
+    result = []
+
+    for sublist in lst:
+        for item in sublist:
+            result.append(item)
+
+    return result
+
+
+n = int(input("Enter the number of sublists: "))
+
+lst = []
+
+for i in range(n):
+
+    size = int(input(f"Enter the size of sublist {i + 1}: "))
+
+    sublist = []
+
+    for j in range(size):
+        sublist.append(int(input(f"Enter element {j + 1}: ")))
+
+    lst.append(sublist)
+
+
+result = flatten(lst)
+
+print(result)
+```
+
+---
+
+#using indices
+
+```
+def flatten(lst):
+
+    result = []
+
+    for i in range(len(lst)):
+        for j in range(len(lst[i])):
+            result.append(lst[i][j])
+
+    return result
+
+
+n = int(input("Enter the number of sublists: "))
+
+lst = []
+
+for i in range(n):
+
+    size = int(input(f"Enter the size of sublist {i + 1}: "))
+
+    sublist = []
+
+    for j in range(size):
+        sublist.append(int(input(f"Enter element {j + 1}: ")))
+
+    lst.append(sublist)
+
+
+result = flatten(lst)
+
+print(result)
+```
+
+---
+
+#using while loop
+
+```
+def flatten(lst):
+
+    result = []
+
+    i = 0
+
+    while i < len(lst):
+
+        j = 0
+
+        while j < len(lst[i]):
+            result.append(lst[i][j])
+            j += 1
+
+        i += 1
+
+    return result
+
+
+n = int(input("Enter the number of sublists: "))
+
+lst = []
+
+for i in range(n):
+
+    size = int(input(f"Enter the size of sublist {i + 1}: "))
+
+    sublist = []
+
+    for j in range(size):
+        sublist.append(int(input(f"Enter element {j + 1}: ")))
+
+    lst.append(sublist)
+
+
+result = flatten(lst)
+
+print(result)
+```
 ## 28. Write a recursive function to generate the Fibonacci series.
 
+#using recursion
+
+```
+def fibonacci(n):
+
+    if n == 0:
+        return 0
+
+    elif n == 1:
+        return 1
+
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+
+n = int(input("Enter the number of terms: "))
+
+for i in range(n):
+    print(fibonacci(i), end=" ")
+```
+
+---
+
+#using recursion (return as list)
+
+```
+def fibonacci(n):
+
+    if n == 0:
+        return 0
+
+    elif n == 1:
+        return 1
+
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+
+def fibonacci_series(n):
+
+    result = []
+
+    for i in range(n):
+        result.append(fibonacci(i))
+
+    return result
+
+
+n = int(input("Enter the number of terms: "))
+
+result = fibonacci_series(n)
+
+print(result)
+```
+-----------------------------------------------------------------------------------------------------------
 # Lambda Functions
 
 ## 29. What is a lambda function?
