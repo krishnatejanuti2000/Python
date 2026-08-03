@@ -1,3 +1,4 @@
+
 # Python Syllabus
 ## Storage & Linux Automation Oriented Python Roadmap
 
@@ -522,3 +523,328 @@ After completing this module, you will be able to:
 - Demonstrate industry-ready Python skills
 
 ---
+
+============================================================================================================
+============================================================================================================
+
+# Part-4 Python Syllabus
+
+---
+
+# Module 1 — Python Fundamentals ✅
+
+- Installation
+- Variables
+- Data Types
+- Operators
+- Type Casting
+- Input / Output
+
+---
+
+# Module 2 — Control Flow ✅
+
+- if
+- elif
+- else
+- for
+- while
+- break
+- continue
+- pass
+
+---
+
+# Module 3 — Functions ✅
+
+## Core
+
+- User Defined Functions
+- Parameters
+- Multiple Parameters
+- Return Values
+- Variable Scope
+
+## Advanced
+
+- Default Arguments
+- Keyword Arguments
+- `*args`
+- `**kwargs`
+- Lambda Functions
+- First-Class Functions
+- Passing Functions as Arguments
+- Returning Functions
+- Basic Recursion
+- Generators
+
+---
+
+# Module 4 — Data Structures ✅
+
+- Lists
+- Tuples
+- Sets
+- Dictionaries
+- Nested Data Structures
+- List Comprehensions
+- Dictionary Comprehensions
+- Set Comprehensions
+
+---
+
+# Module 5 — Strings
+
+- String Operations
+- String Methods
+- String Formatting
+- String Performance Basics
+
+---
+
+# Module 6 — Regular Expressions
+
+- Regex Fundamentals
+- Character Classes
+- Quantifiers
+- Groups
+- Capturing
+- Lookarounds (Practical Level)
+- Python `re` Module
+- Log Parsing
+- Pattern Matching
+- Validation
+
+---
+
+# Module 7 — File Handling
+
+## Files
+
+- Text Files
+- Binary Files
+- Read
+- Write
+- Append
+- File Comparison
+- Directory Traversal
+- Path Handling
+- Large Log Processing
+
+## Structured Data
+
+- JSON
+- CSV
+- YAML
+
+---
+
+# Module 8 — Exception Handling
+
+- try
+- except
+- else
+- finally
+- raise
+- Custom Exceptions
+- Exception Chaining (Practical)
+- Logging Exceptions
+
+---
+
+# Module 9 — Object-Oriented Programming
+
+Focus on practical automation.
+
+- Classes
+- Objects
+- Constructors
+- Encapsulation
+- Inheritance
+- Polymorphism
+- Abstraction
+
+## Automation-Oriented Design
+
+- LogParser
+- TestRunner
+- ReportGenerator
+- StorageDevice
+- Validator Classes
+
+---
+
+# Module 10 — Python Standard Library
+
+## Filesystem
+
+- os
+- pathlib
+- shutil
+- tempfile
+
+## System
+
+- subprocess
+- platform
+
+## Configuration
+
+- configparser
+
+## Utilities
+
+- logging
+- argparse
+- datetime
+- time
+- hashlib
+
+## Collections
+
+- collections
+- itertools
+- functools
+
+## Pattern Matching
+
+- glob
+- fnmatch
+
+## Typing
+
+- Type Hints
+- typing Module
+
+## Networking
+
+- socket (Basics)
+
+---
+
+# Module 11 — Automation
+
+## Linux Automation
+
+- Execute Commands
+- Process Command Output
+- Process Management
+
+## Storage Automation
+
+- Log Parsing
+- Test Validation
+- File Validation
+- Storage Validation
+- Configuration Validation
+
+## Utilities
+
+- Email Notifications (Basics)
+- Report Generation
+- Report Archiving
+
+---
+
+# Module 12 — Test Automation with pytest
+
+## pytest Fundamentals
+
+- Installation
+- Test Discovery
+- Naming Conventions
+- Running Tests
+- Assertions
+- Basic Assertions
+- Exception Assertions
+- Approximate Comparisons
+- Fixtures
+- Built-in Fixtures
+- Custom Fixtures
+- Fixture Scope
+- `conftest.py`
+- Parameterization
+- `@pytest.mark.parametrize`
+- Markers
+- Custom Markers
+- Skip
+- Skipif
+- XFail
+- Mocking (Practical)
+- `unittest.mock`
+- Monkeypatch (Basics)
+- Test Organization
+- Folder Structure
+- Test Modules
+- Test Suites
+- Reporting
+- HTML Reports
+- JUnit XML
+- Coverage Reports
+- Storage Automation Testing
+
+## Write Tests For
+
+- Log Parser
+- Configuration Parser
+- File Validator
+- Storage Validator
+- Report Generator
+- Linux Command Wrapper
+
+---
+
+# Module 13 — REST APIs
+
+- requests
+- GET
+- POST
+- PUT
+- DELETE
+- Authentication
+- JSON Handling
+- Timeouts
+- Error Handling
+
+---
+
+# Module 14 — Project Design & Code Quality
+
+## Architecture
+
+- Modular Programming
+- Utility Modules
+- Project Structure
+
+## Engineering
+
+- Configuration Files
+- Reusable Code
+- Coding Standards
+- Code Review Practices
+- Documentation Basics
+
+## Development Environment
+
+- Virtual Environments (`venv`)
+- Dependency Management (`pip`, `requirements.txt`)
+
+---
+
+# Module 15 — Storage Automation Projects
+
+End-to-end projects integrating everything.
+
+## Projects
+
+- Storage Log Analyzer
+- NVMe SMART Log Parser
+- Automated Test Runner
+- Configuration Validator
+- Report Generator
+- Linux Automation Toolkit
+- File Comparison Utility
+- Storage Health Dashboard (CLI)
+
+---
+
