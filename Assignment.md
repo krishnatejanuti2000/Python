@@ -1299,39 +1299,438 @@ print(result)
 # Lambda Functions
 
 ## 29. What is a lambda function?
+A lambda function is an anonymous (nameless) function in Python that is defined using the `lambda` keyword. It is generally used for short, simple operations where defining a complete function using `def` is unnecessary.
+
+Lambda functions can take any number of arguments, but they can contain only one expression. The value of that expression is automatically returned.
+
+### Syntax
+
+```
+lambda arguments: expression
+```
+#Example
+
+```
+square = lambda x: x * x
+
+print(square(5))
+```
 
 ## 30. How does a lambda function differ from a regular function defined with `def` in Python?
 
+A lambda function is an anonymous, one-line function created using the `lambda` keyword. It can contain only a single expression and automatically returns the result. A regular function is created using the `def` keyword, supports multiple statements, requires an explicit `return` statement when returning a value, and is more suitable for complex logic.
+
+A lambda function and a regular function both perform the same task, but they differ in syntax, features, and usage.
+
+| Feature | `lambda` Function | `def` Function |
+|---------|-------------------|----------------|
+| Name | Anonymous (no name required) | Has a function name |
+| Keyword | Uses `lambda` | Uses `def` |
+| Number of Expressions | Only one expression | Can contain multiple statements |
+| Return Statement | Returns the result automatically | Requires an explicit `return` statement |
+| Complexity| Suitable for simple operations | Suitable for simple and complex logic |
+| Readability | Less readable for large logic | More readable and maintainable |
+| Usage | Commonly used with `map()`, `filter()`, `sorted()`, etc. | Used for general-purpose programming |
+
+
 ## 31. What is the syntax for creating a lambda function in Python?
 
+The syntax for creating a lambda function is:
+
+```
+lambda arguments: expression
+```
+
+- `lambda` → Keyword used to define an anonymous function.
+- `arguments` → One or more input parameters.
+- `expression` → A single expression whose result is automatically returned.
+
+# No Arguments
+
+```
+greet = lambda: "Hello"
+
+print(greet())
+```
+
+#Output
+
+```
+Hello
+```
+
+---
+
+#One Argument
+
+```
+square = lambda x: x * x
+
+print(square(5))
+```
+
+#Output
+
+```
+25
+```
+
+---
+
+#Multiple Arguments
+
+```
+add = lambda a, b: a + b
+
+print(add(10, 20))
+```
+
+
+#Output
+
+```
+30
+```
+
+---
+
+#Three Arguments
+
+```
+largest = lambda a, b, c: max(a, b, c)
+
+print(largest(10, 50, 30))
+```
+
+#Output
+
+```
+50
+```
 ## 32. Can a lambda function have multiple arguments? Provide an example.
 
+Yes. A lambda function can accept any number of arguments, but it can contain only one expression. The expression is evaluated and its result is returned automatically.
+
+#Example: Multiply Three Numbers
+
+```
+multiply = lambda a, b, c: a * b * c
+
+print(multiply(2, 3, 4))
+```
+
+#Output
+
+```
+24
+```
 ## 33. Can a lambda function include multiple expressions? Why or why not?
 
+No. A lambda function cannot contain multiple expressions or statements. It is limited to a single expression, whose result is automatically returned.
+
+This design keeps lambda functions short, simple, and suitable for small operations. If you need multiple statements, loops, or conditional blocks, you should use a regular function defined with `def`.
+
+#Invalid Example
+
+```
+# Invalid
+
+add = lambda a, b:
+    c = a + b
+    return c
+```
+
+This results in a SyntaxError because a lambda function cannot contain multiple statements.
+
+---
+
+#Correct Lambda Function
+
+```
+add = lambda a, b: a + b
+
+print(add(10, 20))
+```
+
+#Output
+
+```
+30
+```
 ## 34. Write a lambda function that adds two numbers.
+
+```
+add = lambda a, b: a + b
+
+num1 = int(input("Enter the first number: "))
+num2 = int(input("Enter the second number: "))
+
+result = add(num1, num2)
+
+print(result)
+```
 
 ## 35. How would you use a lambda function with the `map()` function? Provide an example.
 
+The `map()` function applies a given function to every element in an iterable (such as a list) and returns a map object. A lambda function is commonly used with `map()` for performing simple operations on each element.
+
+#Syntax
+
+```
+map(lambda arguments: expression, iterable)
+```
+
+---
+
+#Example: Square All Numbers
+
+```
+numbers = [1, 2, 3, 4, 5]
+
+result = list(map(lambda x: x * x, numbers))
+
+print(result)
+```
+
+#Output
+
+```
+[1, 4, 9, 16, 25]
+```
+
 ## 36. What is a common use case for lambda functions in combination with the `filter()` function?
 
+The `filter()` function is used to select elements from an iterable that satisfy a given condition. A lambda function is commonly used with `filter()` to define this condition in a single line.
+
+#Syntax
+
+```
+filter(lambda arguments: condition, iterable)
+```
+
+---
+
+#Example 1: Filter Even Numbers
+
+```
+numbers = [1, 2, 3, 4, 5, 6, 7, 8]
+
+result = list(filter(lambda x: x % 2 == 0, numbers))
+
+print(result)
+```
+
+#Output
+
+```
+[2, 4, 6, 8]
+```
+
+---
+
+#Example 2: Filter Odd Numbers
+
+```
+numbers = [1, 2, 3, 4, 5, 6, 7, 8]
+
+result = list(filter(lambda x: x % 2 != 0, numbers))
+
+print(result)
+```
+
+#Output
+
+```
+[1, 3, 5, 7]
+```
+
+---
+
+#Example 3: Filter Numbers Greater Than 50
+
+```
+numbers = [25, 60, 45, 80, 10, 95]
+
+result = list(filter(lambda x: x > 50, numbers))
+
+print(result)
+```
+
+#Output
+
+```
+[60, 80, 95]
+```
 ## 37. How can you use a lambda function as a key in the `sorted()` function?
+
+The `sorted()` function uses the `key` parameter to specify the value on which sorting should be performed. A lambda function is commonly used as the `key` because it provides a simple, one-line way to define the sorting criteria.
+
+#Example 1: Sort a List of Numbers
+
+```
+numbers = [5, 2, 8, 1, 9]
+
+result = sorted(numbers, key=lambda x: x)
+
+print(result)
+```
+
+#Output
+
+```
+[1, 2, 5, 8, 9]
+```
+#Example 2: Sort a Dictionary by Value
+
+```
+data = {
+    "A": 30,
+    "B": 10,
+    "C": 20
+}
+
+result = sorted(data.items(), key=lambda item: item[1])
+
+print(result)
+```
+
+#Output
+
+```
+[('B', 10), ('C', 20), ('A', 30)]
+```
 
 ## 38. Write a lambda function that returns the square of a number and use it to sort a list of numbers in descending order.
 
+```
+square = lambda x: x * x
+
+n = int(input("Enter the size of the list: "))
+
+numbers = []
+
+for i in range(n):
+    numbers.append(int(input(f"Enter element {i + 1}: ")))
+
+square_list = list(map(square, numbers))
+
+square_list = sorted(square_list, reverse=True)
+
+print(square_list)
+```
 # map(), filter(), and reduce()
 
 ## 39. What is the purpose of the `map()` function in Python?
 
+The `map()` function is used to apply a given function to every element of an iterable (such as a list, tuple, or set) and returns a map object containing the results.
+
+#syntax
+
+```
+map(function, iterable)
+```
+
+#Example
+
+```
+numbers = [1, 2, 3, 4, 5]
+
+result = list(map(lambda x: x * x, numbers))
+
+print(result)
+```
+
+#Output
+
+```
+[1, 4, 9, 16, 25]
+```
+
 ## 40. How does the `filter()` function work and what is it used for?
 
+The `filter()` function is used to select elements from an iterable that satisfy a given condition. It returns a filter object containing only the elements for which the condition is `True`.
+
+#Syntax
+
+```
+filter(function, iterable)
+```
+
+#Example
+
+```
+numbers = [1, 2, 3, 4, 5, 6]
+
+result = list(filter(lambda x: x % 2 == 0, numbers))
+
+print(result)
+```
+
+#Output
+
+```
+[2, 4, 6]
+```
 ## 41. What is the role of the `reduce()` function and in which module can it be found?
+
+The `reduce()` function is used to apply a function cumulatively to the elements of an iterable and reduce them to a single value. It is available in the `functools` module.
+
+#Syntax
+
+```
+from functools import reduce
+
+reduce(function, iterable)
+```
+
+#Example
+
+```
+from functools import reduce
+
+numbers = [1, 2, 3, 4, 5]
+
+result = reduce(lambda x, y: x + y, numbers)
+
+print(result)
+```
+
+#Output
+
+```
+15
+```
 
 ## 42. What types of arguments do `map()`, `filter()`, and `reduce()` accept?
 
+`map()` accepts a function and one or more iterables, `filter()` accepts a function and one iterable, and `reduce()` accepts a function and one iterable.
+
+| Function | Arguments |
+|----------|-----------|
+| `map()` | A function and one or more iterables |
+| `filter()` | A function (condition) and one iterable |
+| `reduce()` | A function and one iterable |
+
+
 ## 43. Using `filter()`, print only the required numbers from a given list.
+
+```
+numbers = [10, 25, 30, 45, 50, 60]
+
+result = list(filter(lambda x: x > 30, numbers))
+
+print(result)
+```
 
 ## 44. Using `map()`, find the square of all elements in a given list.
 
+```
+numbers = [1, 2, 3, 4, 5]
+
+result = list(map(lambda x: x * x, numbers))
+
+print(result)
+```
 ---
 
 # File Handling

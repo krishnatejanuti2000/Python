@@ -415,3 +415,268 @@ Use callback functions when the replacement depends on the matched content, such
 - The callback receives a Match object.
 - Callback functions are executed once per regex match.
 - `re.sub()` always returns a new string.
+
+---
+
+# `re.subn()`
+
+## Overview
+
+`re.subn()` works exactly like `re.sub()`, but it also returns the **number of substitutions performed**.
+
+It is useful when an application needs both:
+
+- The modified string
+- The total number of replacements
+
+---
+
+# Syntax
+
+```python
+re.subn(pattern, replacement, string, count=0, flags=0)
+```
+
+---
+
+# Return Value
+
+Unlike `re.sub()`, `re.subn()` returns a tuple.
+
+```python
+(
+    modified_string,
+    replacement_count
+)
+```
+
+---
+
+# Basic Example
+
+```python
+import re
+
+text = "PASS FAIL PASS FAIL FAIL"
+
+result, count = re.subn(
+    r"FAIL",
+    "ERROR",
+    text
+)
+
+print(result)
+print(count)
+```
+
+### Output
+
+```
+PASS ERROR PASS ERROR ERROR
+3
+```
+
+---
+
+# Tuple Unpacking
+
+Recommended approach
+
+```python
+modified_text, replacement_count = re.subn(
+    pattern,
+    replacement,
+    text
+)
+```
+
+Avoid
+
+```python
+result = re.subn(...)
+
+print(result[0])
+print(result[1])
+```
+
+Tuple unpacking is more readable.
+
+---
+
+# Example Using Regex
+
+```python
+import re
+
+text = "Disk100 Disk200 Disk300"
+
+result, count = re.subn(
+    r"\d+",
+    "X",
+    text
+)
+
+print(result)
+print(count)
+```
+
+### Output
+
+```
+DiskX DiskX DiskX
+3
+```
+
+---
+
+# Example Using Named Groups
+
+```python
+import re
+
+text = """Drive01 2048
+Drive02 512
+Drive03 4096"""
+
+result, count = re.subn(
+    r"(?P<device>\w+)\s+(?P<capacity>\d+)",
+    r"Device=\g<device> Capacity=\g<capacity>GB",
+    text
+)
+
+print(result)
+print(count)
+```
+
+### Output
+
+```
+Device=Drive01 Capacity=2048GB
+Device=Drive02 Capacity=512GB
+Device=Drive03 Capacity=4096GB
+3
+```
+
+---
+
+# Chaining Multiple `re.subn()` Calls
+
+Multiple replacements can be performed by passing the output of one `re.subn()` call into the next.
+
+```python
+import re
+
+text = """Storage HDD
+Network HDD
+Storage SSD
+Linux HDD
+Storage NVMe"""
+
+hdd_text, hdd_count = re.subn(
+    r"HDD",
+    "HardDisk",
+    text
+)
+
+ssd_text, ssd_count = re.subn(
+    r"SSD",
+    "SolidStateDrive",
+    hdd_text
+)
+
+final_text, nvme_count = re.subn(
+    r"NVMe",
+    "NonVolatileMemoryExpress",
+    ssd_text
+)
+
+total = hdd_count + ssd_count + nvme_count
+
+print(final_text)
+print(total)
+```
+
+---
+
+# Execution Flow
+
+```
+Original String
+        ↓
+First re.subn()
+        ↓
+Modified String + Count
+        ↓
+Second re.subn()
+        ↓
+Modified String + Count
+        ↓
+Continue as needed
+```
+
+---
+
+# Difference Between `re.sub()` and `re.subn()`
+
+| `re.sub()` | `re.subn()` |
+|------------|-------------|
+| Returns modified string | Returns modified string and replacement count |
+| Return type: `str` | Return type: `tuple` |
+| Used when count is not required | Used when replacement count is required |
+
+---
+
+# Common Use Cases
+
+- Log processing
+- Automation scripts
+- Data migration
+- Configuration updates
+- Report generation
+- Storage validation
+- Counting modified records
+
+---
+
+# Best Practices
+
+- Use tuple unpacking.
+- Use raw strings for regex patterns.
+- Use Named Groups for better readability.
+- Chain multiple `re.subn()` calls when multiple transformations are required.
+
+---
+
+# Interview Questions
+
+## Q1. What is the difference between `re.sub()` and `re.subn()`?
+
+`re.sub()` returns only the modified string.
+
+`re.subn()` returns both the modified string and the total number of replacements.
+
+---
+
+## Q2. What is the return type of `re.subn()`?
+
+A tuple.
+
+```python
+(modified_string, replacement_count)
+```
+
+---
+
+## Q3. When should `re.subn()` be preferred over `re.sub()`?
+
+Whenever the application needs to know how many replacements were performed.
+
+---
+
+# Key Takeaways
+
+- `re.subn()` behaves like `re.sub()`.
+- It additionally returns the number of replacements.
+- The return type is a tuple.
+- Tuple unpacking is the preferred approach.
+- Multiple `re.subn()` calls can be chained to perform sequential transformations.
