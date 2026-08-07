@@ -1146,6 +1146,108 @@ OR
 
 ------------------------------------------------------------------------------
 
+# Engineering Note – Why Didn't We Add a Space Rule?
+
+During implementation, one question came up.
+
+> We wrote rules for
+
+```
+No ..
+
+No ++
+```
+
+but we never wrote
+
+```
+No Spaces
+```
+
+### Why?
+
+Because spaces are **already impossible**.
+
+Our Local Part allows only
+
+```regex
+[A-Za-z0-9.+_-]
+```
+
+Our Provider allows only
+
+```regex
+(gmail|yahoo)
+```
+
+Our TLD allows only
+
+```regex
+(com|in|org)
+```
+
+Since **space (' ')** is not included anywhere,
+
+inputs like
+
+```
+abc def@gmail.com
+```
+
+are automatically rejected.
+
+Therefore,
+
+an explicit rule like
+
+```regex
+(?!.*\s)
+```
+
+is **not required** for this validator.
+
+---
+
+## Defensive Programming
+
+Some production systems still write
+
+```regex
+(?!.*\s)
+```
+
+at the beginning of the regex.
+
+Reason
+
+Even if someone accidentally modifies the character classes in the future,
+
+the validator will still reject whitespace.
+
+Example
+
+```regex
+^(?!.*\s)(?!.*\.\.)(?!.*\+\+)...
+```
+
+This is called **Defensive Programming**.
+
+---
+
+## Engineering Lesson
+
+Never add unnecessary regex.
+
+Ask yourself
+
+```
+Is this already impossible because of my current design?
+```
+
+If the answer is **Yes**,
+
+adding another rule only makes the regex more complex without improving correctness.
+------------------------------------------------------------------------------
 # Complete Design
 
 ```
