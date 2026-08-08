@@ -39,11 +39,50 @@
 ## 20. Write the regex pattern and complete Python code for the following scenarios.
 
 ### 20.1 Write a regex to check whether a given string contains digits or not.
+```python
+import re
 
+text = input("Enter a string: ")
+
+pattern = r"[0-9]"
+
+result = re.search(pattern, text)
+
+if result:
+    print("String contains Digits")
+else:
+    print("String does not contain Digits")
+```
 ### 20.2 Write a regex to check whether a given string contains alphabets.
+```python
+import re
 
+text = input("Enter a string: ")
+
+pattern = r"[a-zA-Z]"
+
+result = re.search(pattern, text)
+
+if result:
+    print("String contains alphabets")
+else:
+    print("String does not contain alphabets")
+```
 ### 20.3 Write a regex to check whether a given number is in the range **0 to 255**.
+```python
+import re
 
+text = input("enter the number : ")
+
+pattern = r"(25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)"
+
+result = re.match(pattern, text)
+
+if result:
+    print("Valid number : within the Range")
+else:
+    print("Invalid number : out of Range")
+```
 
 ### 20.4 Write a regex to validate an email address.
 ```python
@@ -278,13 +317,33 @@ else:
 ```python
 drive_names = "Drive1 /dev/sda , Drive2 /dev/sdb"
 ```
+```python
+import re
 
+drive_names = "Drive1 /dev/sda , Drive2 /dev/sdb"
+
+pattern = r"/[a-z]{3}/[a-z]{3}"
+
+result = re.findall(pattern, drive_names)
+
+print(result)
+```
 ### 20.14 Extract the PCI address.
 
 ```python
 str1 = "PCI address is 0a.1.1"
 ```
+```python
+import re
 
+str1 = "PCI address is 0a.1.1"
+
+pattern = r"[a-z0-09]{2}\.\d\.\d"
+
+result = re.search(pattern, str1)
+
+print(result.group())
+```
 ### 20.15 Create a dictionary from the following string.
 
 ```python
@@ -299,4 +358,18 @@ str2 = "Drive name /dev/sda capacity 500GB type HDD"
     "capacity": "500GB",
     "type": "HDD"
 }
+```
+
+```python
+import re
+
+str2 = "Drive name /dev/sda capacity 500GB type HDD"
+
+pattern = r"(?P<key1>Drive name)\s(?P<value1>/[a-z]{3}/[a-z]{3})\s(?P<key2>capacity)\s(?P<value2>\d+GB)\s(?P<key3>type)\s(?P<value3>\w+)"
+
+match = re.search(pattern, str2)
+
+result = {match.group("key1"):match.group("value1"), match.group("key2"):match.group("value2"), match.group("key3"):match.group("value3")}
+
+print(result)
 ```
