@@ -3539,3 +3539,1660 @@ Used to validate the complete string.
 
 ---
 
+# Question 7 – Storage Device Identifier Validation
+
+---
+
+## Problem Statement
+
+Validate a Linux Storage Device Identifier using Python Regular Expressions.
+
+The Storage Test Automation framework receives a device identifier and must determine whether it follows one of the supported storage-device formats.
+
+---
+
+## Business Requirements
+
+Two storage-device formats are supported.
+
+### SATA/SCSI-style devices
+
+```text
+/dev/sda
+/dev/sdb
+/dev/sda1
+/dev/sdb12
+````
+
+### NVMe devices
+
+```text
+/dev/nvme0n1
+/dev/nvme1n1
+/dev/nvme0n1p1
+/dev/nvme2n3p16
+```
+
+---
+
+## Invalid Examples
+
+```text
+/dev/
+/dev/s
+/dev/sdaabc
+/dev/sda-1
+/dev/nvme
+/dev/nvmeXn1
+/dev/nvme0
+/dev/nvme0n
+/dev/nvme0n1abc
+```
+
+---
+
+# Step 1 – Requirement Analysis
+
+The biggest mistake would be trying to write the complete device-validation regex immediately.
+
+Instead, break the requirement into the two supported device formats.
+
+```text
+Storage Device
+      |
+      +----------------------+
+      |                      |
+   SATA/SCSI                NVMe
+      |                      |
+   /dev/sda...           /dev/nvme...
+```
+
+Therefore, solve each device format independently.
+
+---
+
+# Step 2 – Designing SATA/SCSI Device Format
+
+Consider:
+
+```text
+/dev/sda
+/dev/sda1
+/dev/sdb12
+```
+
+Break the structure:
+
+```text
+/dev/sda12
+
+│   │ │  │
+│   │ │  └── Partition number
+│   │ └───── Device letter
+│   └─────── sd
+└─────────── /dev/
+```
+
+The requirements are:
+
+```text
+/dev/       → mandatory
+sd          → mandatory
+[a-z]       → one lowercase device letter
+\d*         → optional partition number
+```
+
+---
+
+## SATA/SCSI Regex
+
+```regex
+/dev/sd[a-z]\d*
+```
+
+---
+
+## Why `\d*`?
+
+The partition number is optional.
+
+Therefore both:
+
+```text
+/dev/sda
+/dev/sda1
+```
+
+must be accepted.
+
+If we used:
+
+```regex
+\d+
+```
+
+then:
+
+```text
+/dev/sda
+```
+
+would fail because at least one digit would be required.
+
+Therefore:
+
+```regex
+\d*
+```
+
+is correct.
+
+---
+
+# Step 3 – Designing NVMe Device Format
+
+Consider:
+
+```text
+/dev/nvme0n1
+/dev/nvme1n1
+/dev/nvme0n1p1
+/dev/nvme2n3p16
+```
+
+Break the structure:
+
+```text
+/dev/nvme2n3p16
+
+│        │ │ │  │
+│        │ │ │  └── Partition number
+│        │ │ └───── p
+│        │ └─────── Namespace number
+│        └───────── n
+└────────────────── Controller number
+```
+
+The structure is:
+
+```text
+/dev/nvme
+controller number
+n
+namespace number
+optional p + partition number
+```
+
+---
+
+## NVMe Regex
+
+```regex
+/dev/nvme\dn\d(?:p\d+)?
+```
+
+---
+
+## Why Is `p` Optional?
+
+Consider:
+
+```text
+/dev/nvme0n1
+```
+
+This is the namespace itself.
+
+A partition is represented as:
+
+```text
+/dev/nvme0n1p1
+```
+
+Therefore:
+
+```regex
+(?:p\d+)?
+```
+
+means:
+
+```text
+p + partition number
+```
+
+is optional.
+
+---
+
+# Step 4 – Combining Both Device Formats
+
+We now have two independent patterns.
+
+SATA/SCSI:
+
+```regex
+/dev/sd[a-z]\d*
+```
+
+NVMe:
+
+```regex
+/dev/nvme\dn\d(?:p\d+)?
+```
+
+Because the input may match either format, use alternation.
+
+```regex
+(A|B)
+```
+
+Therefore:
+
+```regex
+(/dev/sd[a-z]\d*|/dev/nvme\dn\d(?:p\d+)?)
+```
+
+---
+
+# Step 5 – Complete Validation
+
+This is a validation problem.
+
+We don't want to find a valid device name somewhere inside a larger string.
+
+The **entire input** must be valid.
+
+Therefore:
+
+```regex
+^
+```
+
+and:
+
+```regex
+$
+```
+
+are required.
+
+Final pattern:
+
+```regex
+^(/dev/sd[a-z]\d*|/dev/nvme\dn\d(?:p\d+)?)$
+```
+
+---
+
+# Final Solution
+
+```python
+import re
+
+pattern = r"^(/dev/sd[a-z]\d*|/dev/nvme\dn\d(?:p\d+)?)$"
+
+devices = [
+    # Valid
+    "/dev/sda",
+    "/dev/sdb",
+    "/dev/sda1",
+    "/dev/sdb12",
+    "/dev/nvme0n1",
+    "/dev/nvme1n1",
+    "/dev/nvme0n1p1",
+    "/dev/nvme2n3p16",
+
+    # Invalid
+    "/dev/",
+    "/dev/s",
+    "/dev/sdaabc",
+    "/dev/sda-1",
+    "/dev/nvme",
+    "/dev/nvmeXn1",
+    "/dev/nvme0",
+    "/dev/nvme0n",
+    "/dev/nvme0n1abc"
+]
+
+print("========== STORAGE DEVICE VALIDATION ==========\n")
+
+for device in devices:
+    if re.fullmatch(pattern, device):
+        print(f"VALID   : {device}")
+    else:
+        print(f"INVALID : {device}")
+```
+
+---
+
+# Why `re.fullmatch()`?
+
+The requirement is:
+
+> The complete input must represent a valid storage device.
+
+We do not want:
+
+```text
+abc/dev/sda/xyz
+```
+
+to be accepted just because `/dev/sda` appears inside it.
+
+Therefore:
+
+```python
+re.fullmatch()
+```
+
+is appropriate.
+
+---
+
+# Boundary Testing
+
+### Valid Boundaries
+
+```text
+/dev/sda
+/dev/sda1
+/dev/sda999
+/dev/nvme0n1
+/dev/nvme0n1p1
+/dev/nvme0n1p999
+```
+
+### Invalid Boundaries
+
+```text
+/dev/s
+/dev/sdaX
+/dev/sda-1
+/dev/nvmeXn1
+/dev/nvme0
+/dev/nvme0n
+/dev/nvme0n1X
+```
+
+---
+
+# Engineering Lesson
+
+The important lesson is not the final regex.
+
+The important design process was:
+
+```text
+Two device families
+        ↓
+Separate each format
+        ↓
+Build individual regex components
+        ↓
+Combine using alternation
+        ↓
+Require complete input
+        ↓
+Use re.fullmatch()
+        ↓
+Boundary testing
+```
+
+---
+
+# Question 8 – Storage Capacity Validation
+
+---
+
+## Problem Statement
+
+Validate a Storage Capacity value using Python Regular Expressions.
+
+The Storage Test Automation framework receives capacity values such as:
+
+```text
+512MB
+500GB
+1TB
+1.5TB
+10.25GB
+4PB
+```
+
+---
+
+## Business Requirements
+
+The format is:
+
+```text
+<number><unit>
+```
+
+Allowed units:
+
+```text
+MB
+GB
+TB
+PB
+```
+
+The numeric portion may contain:
+
+```text
+Integer
+```
+
+or:
+
+```text
+Decimal number
+```
+
+---
+
+## Valid Examples
+
+```text
+512MB
+500GB
+1TB
+2TB
+1.5TB
+10.25GB
+4PB
+```
+
+---
+
+## Invalid Examples
+
+```text
+500
+500KB
+500gb
+1.5
+TB
+.5TB
+1..5TB
+1TBextra
+abcGB
+-1TB
+```
+
+---
+
+# Step 1 – Requirement Analysis
+
+Break the capacity into two components.
+
+```text
+Storage Capacity
+       |
+       +----------+
+       |          |
+     Number      Unit
+```
+
+For:
+
+```text
+1.5TB
+```
+
+we have:
+
+```text
+1.5 → Number
+TB  → Unit
+```
+
+---
+
+# Step 2 – Designing the Number
+
+The number may be:
+
+```text
+1
+500
+1.5
+10.25
+```
+
+The integer portion requires:
+
+```regex
+\d+
+```
+
+A decimal portion is optional:
+
+```regex
+(?:\.\d+)?
+```
+
+Therefore:
+
+```regex
+\d+(?:\.\d+)?
+```
+
+---
+
+# Step 3 – Designing the Unit
+
+Allowed units are:
+
+```text
+MB
+GB
+TB
+PB
+```
+
+Therefore:
+
+```regex
+(?:MB|GB|TB|PB)
+```
+
+---
+
+# Step 4 – Combine Number and Unit
+
+```regex
+\d+(?:\.\d+)?(?:MB|GB|TB|PB)
+```
+
+---
+
+# Step 5 – Complete Validation
+
+The entire input must represent a capacity.
+
+Therefore:
+
+```regex
+^\d+(?:\.\d+)?(?:MB|GB|TB|PB)$
+```
+
+---
+
+# Final Solution
+
+```python
+import re
+
+pattern = r"^\d+(?:\.\d+)?(?:MB|GB|TB|PB)$"
+
+capacities = [
+    # Valid
+    "512MB",
+    "500GB",
+    "1TB",
+    "2TB",
+    "1.5TB",
+    "10.25GB",
+    "4PB",
+
+    # Invalid
+    "500",
+    "500KB",
+    "500gb",
+    "1.5",
+    "TB",
+    ".5TB",
+    "1..5TB",
+    "1TBextra",
+    "abcGB",
+    "-1TB"
+]
+
+print("========== STORAGE CAPACITY VALIDATION ==========\n")
+
+for capacity in capacities:
+    if re.fullmatch(pattern, capacity):
+        print(f"VALID   : {capacity}")
+    else:
+        print(f"INVALID : {capacity}")
+```
+
+---
+
+# Boundary Testing
+
+```text
+1MB          → VALID
+1GB          → VALID
+1TB          → VALID
+1PB          → VALID
+1.5TB        → VALID
+10.25GB      → VALID
+
+.5TB         → INVALID
+1.TB         → INVALID
+1..5TB       → INVALID
+1KB          → INVALID
+1tb          → INVALID
+1TBextra     → INVALID
+```
+
+---
+
+# Important Engineering Note
+
+Regex is validating the **format**.
+
+It is not determining whether the capacity is physically realistic.
+
+For example:
+
+```text
+999999999PB
+```
+
+may be structurally valid even though it is not a realistic storage capacity.
+
+Therefore:
+
+```text
+Regex
+  ↓
+Format validation
+
+Python/business logic
+  ↓
+Range/business validation
+```
+
+This separation is important in production automation.
+
+---
+
+# Engineering Lesson
+
+Do not make the regex responsible for every possible business rule.
+
+First determine:
+
+> Is the value structurally valid?
+
+Then perform additional business validation separately when required.
+
+---
+
+# Question 9 – Storage Firmware Version Validation
+
+---
+
+## Problem Statement
+
+Validate a Storage Device Firmware Version using Python Regular Expressions.
+
+The required format is:
+
+```text
+FW<major>.<minor>.<patch>
+```
+
+---
+
+## Business Requirements
+
+`FW` is mandatory.
+
+The following must be numeric:
+
+```text
+major
+minor
+patch
+```
+
+Each component must contain one or more digits.
+
+---
+
+## Valid Examples
+
+```text
+FW1.0.0
+FW2.5.13
+FW10.2.4
+FW123.45.678
+```
+
+---
+
+## Invalid Examples
+
+```text
+1.0.0
+FW1
+FW1.0
+FW1.0.0.1
+FWa.b.c
+FW1-0-0
+FW1.0.x
+XFW1.0.0
+FW1.0.0beta
+```
+
+---
+
+# Step 1 – Requirement Analysis
+
+Break the version into components.
+
+```text
+FW1.2.3
+
+││ │ │
+││ │ └── Patch
+││ └──── Minor
+│└────── Major
+└─────── Mandatory FW prefix
+```
+
+Therefore:
+
+```text
+FW
++
+major
++
+.
++
+minor
++
+.
++
+patch
+```
+
+---
+
+# Step 2 – Firmware Prefix
+
+```regex
+FW
+```
+
+---
+
+# Step 3 – Major Version
+
+One or more digits:
+
+```regex
+\d+
+```
+
+---
+
+# Step 4 – Dot Separator
+
+A literal dot must be escaped.
+
+```regex
+\.
+```
+
+Why?
+
+Because:
+
+```regex
+.
+```
+
+means:
+
+> Any character.
+
+But:
+
+```regex
+\.
+```
+
+means:
+
+> Literal dot.
+
+---
+
+# Step 5 – Minor Version
+
+```regex
+\d+
+```
+
+---
+
+# Step 6 – Second Dot
+
+```regex
+\.
+```
+
+---
+
+# Step 7 – Patch Version
+
+```regex
+\d+
+```
+
+---
+
+# Step 8 – Combine
+
+```regex
+FW\d+\.\d+\.\d+
+```
+
+---
+
+# Step 9 – Complete Validation
+
+```regex
+^FW\d+\.\d+\.\d+$
+```
+
+---
+
+# Final Solution
+
+```python
+import re
+
+pattern = r"^FW\d+\.\d+\.\d+$"
+
+versions = [
+    # Valid
+    "FW1.0.0",
+    "FW2.5.13",
+    "FW10.2.4",
+    "FW123.45.678",
+
+    # Invalid
+    "1.0.0",
+    "FW1",
+    "FW1.0",
+    "FW1.0.0.1",
+    "FWa.b.c",
+    "FW1-0-0",
+    "FW1.0.x",
+    "XFW1.0.0",
+    "FW1.0.0beta"
+]
+
+print("========== FIRMWARE VERSION VALIDATION ==========\n")
+
+for version in versions:
+    if re.fullmatch(pattern, version):
+        print(f"VALID   : {version}")
+    else:
+        print(f"INVALID : {version}")
+```
+
+---
+
+# Boundary Testing
+
+### Valid
+
+```text
+FW0.0.0
+FW1.0.0
+FW10.20.30
+FW999.999.999
+```
+
+### Invalid
+
+```text
+FW1
+FW1.0
+FW1.0.0.1
+FW1..0
+FW1.0.
+FW.1.0
+FWa.1.0
+FW1.0.x
+```
+
+---
+
+# Engineering Lesson
+
+This problem reinforces:
+
+```text
+Literal characters
++
+Character classes
++
+Quantifiers
++
+Anchors
+```
+
+Before using lookarounds or complicated logic, first ask:
+
+> Can the requirement be expressed directly through structure?
+
+If yes, prefer the simpler regex.
+
+---
+
+# Question 10 – Enterprise Storage Test Parameter Validation
+
+---
+
+## Problem Statement
+
+The Storage Test Automation framework receives an I/O test configuration as a single parameter string.
+
+The validator must determine whether the complete configuration follows the required format.
+
+---
+
+## Business Requirements
+
+The required format is:
+
+```text
+MODE=<mode> SIZE=<capacity> BLOCK=<block_size> QUEUE=<queue_depth>
+```
+
+All four fields are mandatory.
+
+---
+
+# MODE Requirements
+
+Only these values are allowed:
+
+```text
+read
+write
+randread
+randwrite
+```
+
+---
+
+# SIZE Requirements
+
+The size must contain:
+
+```text
+number + unit
+```
+
+Allowed units:
+
+```text
+MB
+GB
+TB
+```
+
+Examples:
+
+```text
+512MB
+1GB
+4GB
+1.5TB
+```
+
+---
+
+# BLOCK Requirements
+
+The block size must contain:
+
+```text
+integer + KB
+```
+
+Examples:
+
+```text
+4KB
+8KB
+64KB
+128KB
+```
+
+Decimal block sizes are not allowed.
+
+---
+
+# QUEUE Requirements
+
+Queue depth must be a positive integer.
+
+Examples:
+
+```text
+1
+4
+8
+32
+128
+```
+
+Zero and negative values are invalid.
+
+---
+
+## Valid Examples
+
+```text
+MODE=read SIZE=1TB BLOCK=128KB QUEUE=32
+MODE=write SIZE=500GB BLOCK=4KB QUEUE=8
+MODE=randread SIZE=1.5TB BLOCK=64KB QUEUE=128
+MODE=randwrite SIZE=512MB BLOCK=8KB QUEUE=1
+```
+
+---
+
+## Invalid Examples
+
+```text
+MODE=delete SIZE=1TB BLOCK=128KB QUEUE=32
+MODE=read SIZE=1PB BLOCK=128KB QUEUE=32
+MODE=read SIZE=1TB BLOCK=1.5KB QUEUE=32
+MODE=read SIZE=1TB BLOCK=128MB QUEUE=32
+MODE=read SIZE=1TB BLOCK=128KB QUEUE=0
+MODE=read SIZE=1TB BLOCK=128KB QUEUE=-1
+MODE=read SIZE=1TB BLOCK=128KB
+MODE=read SIZE=1TB BLOCK=128KB QUEUE=32 EXTRA=x
+```
+
+---
+
+# Step 1 – Requirement Analysis
+
+The complete configuration contains four fields.
+
+```text
+Configuration
+      |
+      +-----------------------------+
+      |             |       |       |
+     MODE          SIZE   BLOCK   QUEUE
+```
+
+Do not build the complete regex immediately.
+
+Solve each field independently.
+
+---
+
+# Step 2 – MODE Validation
+
+Allowed values:
+
+```text
+read
+write
+randread
+randwrite
+```
+
+Therefore:
+
+```regex
+(?:read|write|randread|randwrite)
+```
+
+---
+
+# Step 3 – SIZE Validation
+
+From Question 8, the numeric portion is:
+
+```regex
+\d+(?:\.\d+)?
+```
+
+Allowed units for this question:
+
+```regex
+(?:MB|GB|TB)
+```
+
+Therefore:
+
+```regex
+\d+(?:\.\d+)?(?:MB|GB|TB)
+```
+
+---
+
+# Step 4 – BLOCK Validation
+
+The requirement says:
+
+```text
+Integer + KB
+```
+
+Therefore:
+
+```regex
+\d+KB
+```
+
+A decimal value such as:
+
+```text
+1.5KB
+```
+
+must fail.
+
+---
+
+# Step 5 – QUEUE Validation
+
+The queue depth must be a positive integer.
+
+A positive integer can be represented as:
+
+```regex
+[1-9]\d*
+```
+
+The first digit must be from:
+
+```text
+1–9
+```
+
+and additional digits are optional.
+
+Therefore:
+
+```text
+1
+8
+32
+128
+```
+
+are accepted.
+
+But:
+
+```text
+0
+```
+
+is rejected.
+
+---
+
+# Step 6 – Field Names
+
+The field names are mandatory:
+
+```text
+MODE=
+SIZE=
+BLOCK=
+QUEUE=
+```
+
+---
+
+# Step 7 – Field Separators
+
+Fields are separated by whitespace.
+
+Therefore:
+
+```regex
+\s+
+```
+
+is used between fields.
+
+---
+
+# Step 8 – Combine Everything
+
+Conceptually:
+
+```text
+MODE=<mode>
+    ↓
+whitespace
+    ↓
+SIZE=<size>
+    ↓
+whitespace
+    ↓
+BLOCK=<block>
+    ↓
+whitespace
+    ↓
+QUEUE=<queue>
+```
+
+---
+
+# Step 9 – Complete Validation
+
+The final structure is:
+
+```regex
+^MODE=(?:read|write|randread|randwrite)\s+SIZE=\d+(?:\.\d+)?(?:MB|GB|TB)\s+BLOCK=\d+KB\s+QUEUE=[1-9]\d*$
+```
+
+---
+
+# Final Solution
+
+```python
+import re
+
+pattern = (
+    r"^MODE=(?:read|write|randread|randwrite)"
+    r"\s+SIZE=\d+(?:\.\d+)?(?:MB|GB|TB)"
+    r"\s+BLOCK=\d+KB"
+    r"\s+QUEUE=[1-9]\d*$"
+)
+
+tests = [
+    # Valid
+    "MODE=read SIZE=1TB BLOCK=128KB QUEUE=32",
+    "MODE=write SIZE=500GB BLOCK=4KB QUEUE=8",
+    "MODE=randread SIZE=1.5TB BLOCK=64KB QUEUE=128",
+    "MODE=randwrite SIZE=512MB BLOCK=8KB QUEUE=1",
+
+    # Invalid
+    "MODE=delete SIZE=1TB BLOCK=128KB QUEUE=32",
+    "MODE=read SIZE=1PB BLOCK=128KB QUEUE=32",
+    "MODE=read SIZE=1TB BLOCK=1.5KB QUEUE=32",
+    "MODE=read SIZE=1TB BLOCK=128MB QUEUE=32",
+    "MODE=read SIZE=1TB BLOCK=128KB QUEUE=0",
+    "MODE=read SIZE=1TB BLOCK=128KB QUEUE=-1",
+    "MODE=read SIZE=1TB BLOCK=128KB",
+    "MODE=read SIZE=1TB BLOCK=128KB QUEUE=32 EXTRA=x"
+]
+
+print("========== STORAGE TEST PARAMETER VALIDATION ==========\n")
+
+for test in tests:
+    if re.fullmatch(pattern, test):
+        print(f"VALID   : {test}")
+    else:
+        print(f"INVALID : {test}")
+```
+
+---
+
+# Why `re.fullmatch()`?
+
+This is a complete validation problem.
+
+The input must contain exactly:
+
+```text
+MODE
+SIZE
+BLOCK
+QUEUE
+```
+
+Therefore:
+
+```text
+MODE=read SIZE=1TB BLOCK=128KB QUEUE=32 EXTRA=x
+```
+
+must be rejected.
+
+We do not want a partial match.
+
+Therefore:
+
+```python
+re.fullmatch()
+```
+
+is appropriate.
+
+---
+
+# Boundary Testing
+
+## MODE
+
+```text
+read        → VALID
+write       → VALID
+randread    → VALID
+randwrite   → VALID
+delete      → INVALID
+READ        → INVALID
+```
+
+---
+
+## SIZE
+
+```text
+1MB         → VALID
+1GB         → VALID
+1TB         → VALID
+1.5TB       → VALID
+1PB         → INVALID
+1KB         → INVALID
+.5TB        → INVALID
+```
+
+---
+
+## BLOCK
+
+```text
+1KB         → VALID
+4KB         → VALID
+128KB       → VALID
+1.5KB       → INVALID
+128MB       → INVALID
+```
+
+---
+
+## QUEUE
+
+```text
+1           → VALID
+8           → VALID
+128         → VALID
+0           → INVALID
+-1          → INVALID
+```
+
+---
+
+## Structure
+
+```text
+Missing MODE       → INVALID
+Missing SIZE       → INVALID
+Missing BLOCK      → INVALID
+Missing QUEUE      → INVALID
+Extra field        → INVALID
+Wrong field order  → INVALID
+```
+
+---
+
+# Engineering Lesson
+
+This final question combines the validation techniques learned throughout the module.
+
+```text
+Requirement
+      ↓
+Break into components
+      ↓
+Matching rules
+      ↓
+Restriction rules
+      ↓
+Build small regex components
+      ↓
+Test components
+      ↓
+Combine components
+      ↓
+Anchor complete input
+      ↓
+Use fullmatch()
+      ↓
+Boundary testing
+```
+
+The objective is not to memorize the final regex.
+
+The objective is to be able to derive it from the requirements.
+
+---
+
+# Overall Engineering Lessons from Questions 7–10
+
+The same methodology continues from Questions 1–6.
+
+```text
+Requirement
+    ↓
+Break into components
+    ↓
+Identify matching rules
+    ↓
+Identify restriction rules
+    ↓
+Build small regex components
+    ↓
+Combine components
+    ↓
+Test boundary values
+    ↓
+Test valid cases
+    ↓
+Test invalid cases
+    ↓
+Optimize only after understanding
+```
+
+---
+
+# Important Validation Patterns
+
+## Alternation
+
+```regex
+(A|B)
+```
+
+Means:
+
+```text
+A OR B
+```
+
+---
+
+## Optional Group
+
+```regex
+(A)?
+```
+
+Means:
+
+```text
+A
+OR
+nothing
+```
+
+---
+
+## Non-Capturing Group
+
+```regex
+(?:A|B)
+```
+
+Used when grouping is required but the matched value does not need to be captured.
+
+---
+
+## Positive Lookahead
+
+```regex
+(?=.*PATTERN)
+```
+
+Means:
+
+> PATTERN must exist somewhere.
+
+---
+
+## Negative Lookahead
+
+```regex
+(?!.*PATTERN)
+```
+
+Means:
+
+> PATTERN must not exist anywhere.
+
+---
+
+## Character Classes
+
+```regex
+[A-Z]
+[a-z]
+[0-9]
+```
+
+---
+
+## Quantifiers
+
+```regex
+\d+
+```
+
+One or more digits.
+
+```regex
+\d*
+```
+
+Zero or more digits.
+
+```regex
+\d?
+```
+
+Zero or one digit.
+
+```regex
+\d{3}
+```
+
+Exactly three digits.
+
+---
+
+## Anchors
+
+```regex
+^
+$
+```
+
+Used when validating the complete input.
+
+---
+
+# Validation Progress
+
+| Question | Problem                                      | Status      |
+| -------- | -------------------------------------------- | ----------- |
+| 1        | Email Validation                             | ✅ Completed |
+| 2        | IPv4 Validation                              | ✅ Completed |
+| 3        | MAC Address Validation                       | ✅ Completed |
+| 4        | Password Validation                          | ✅ Completed |
+| 5        | Mobile Number Validation                     | ✅ Completed |
+| 6        | Date Validation                              | ✅ Completed |
+| 7        | Storage Device Identifier Validation         | ✅ Completed |
+| 8        | Storage Capacity Validation                  | ✅ Completed |
+| 9        | Firmware Version Validation                  | ✅ Completed|
+| 10       | Enterprise Storage Test Parameter Validation | ✅ Completed |
+
+---
+
+# Final Validation Engineering Goal
+
+After completing Questions 1–10, the target skill is:
+
+```text
+Validation Requirement
+        ↓
+Understand the input
+        ↓
+Break input into components
+        ↓
+Identify Matching Rules
+        ↓
+Identify Restriction Rules
+        ↓
+Build each component independently
+        ↓
+Test each component
+        ↓
+Combine components
+        ↓
+Anchor complete input
+        ↓
+Select appropriate validation API
+        ↓
+Test valid cases
+        ↓
+Test invalid cases
+        ↓
+Test boundary cases
+        ↓
+Test near-miss cases
+        ↓
+Final Validator
+```
+
+The goal is not:
+
+> Memorize regex patterns.
+
+The goal is:
+
+> **Design a validator from requirements.**
+
+---
+
+# Final Note
+
+This notebook continues to follow the engineering-diary approach established in Questions 1–6.
+
+Whenever solving a new validation problem:
+
+1. Never start with the regex.
+2. Start with the requirements.
+3. Convert requirements into rules.
+4. Separate matching rules from restriction rules.
+5. Build the regex incrementally.
+6. Test every step.
+7. Analyze failures instead of guessing.
+8. Improve the design until all test cases pass.
+
+If this methodology is followed consistently, complex validation problems become manageable, testable, and easier to debug.
+
+
