@@ -1688,87 +1688,6 @@ This exact workflow will be reused for every future validation problem.
 
 ------------------------------------------------------------------------------
 
-# Skills Learned
-
-By completing this exercise, the following Regex concepts were mastered.
-
-✅ Character Classes
-
-✅ Anchors
-
-✅ Quantifiers
-
-✅ Greedy Matching
-
-✅ Grouping
-
-✅ Optional Groups
-
-✅ Alternation
-
-✅ Negative Lookahead
-
-✅ Business Rule Validation
-
-✅ Engineering Methodology
-
-------------------------------------------------------------------------------
-
-# Future Validation Problems
-
-Question 2
-
-IPv4 Address Validation
-
----
-
-Question 3
-
-MAC Address Validation
-
----
-
-Question 4
-
-URL Validation
-
----
-
-Question 5
-
-Phone Number Validation
-
----
-
-Question 6
-
-Password Validation
-
----
-
-Question 7
-
-Serial Number Validation
-
----
-
-Question 8
-
-UUID Validation
-
----
-
-Question 9
-
-Product ID Validation
-
----
-
-Question 10
-
-Storage Device Name Validation
-
-------------------------------------------------------------------------------
 ```
 import re
 
@@ -1827,3 +1746,1796 @@ Whenever solving a new validation problem:
 8. Improve the design until all test cases pass.
 
 If this methodology is followed consistently, even complex validators become manageable and easier to debug.
+---
+
+# Question 2 – IPv4 Address Validation
+
+---
+
+## Problem Statement
+
+Validate an IPv4 Address using Python Regular Expressions.
+
+---
+
+## Business Requirements
+
+An IPv4 address contains four decimal octets.
+
+Each octet must be within:
+
+```text
+0–255
+```
+
+For this exercise, we also decided not to accept leading-zero representations such as:
+
+```text
+01
+001
+010
+```
+
+Examples
+
+✅ Valid
+
+```text
+192.168.1.1
+10.0.0.1
+255.255.255.255
+0.0.0.0
+```
+
+❌ Invalid
+
+```text
+256.1.1.1
+1.1.1.256
+01.1.1.1
+192.168.001.010
+```
+
+---
+
+# Step 1 – Requirement Analysis
+
+The biggest mistake would be trying to write the complete IPv4 regex immediately.
+
+Instead,
+
+break the IPv4 address into four identical components.
+
+```text
+192.168.1.10
+
+│    │   │ │
+│    │   │ └── Octet 4
+│    │   └──── Octet 3
+│    └──────── Octet 2
+└───────────── Octet 1
+```
+
+Therefore:
+
+```text
+IPv4 Address
+
+=
+
+Octet
++
+.
++
+Octet
++
+.
++
+Octet
++
+.
++
+Octet
+```
+
+The difficult part is only:
+
+```text
+How do we validate one octet from 0–255?
+```
+
+So we solve one octet first.
+
+---
+
+# Step 2 – Designing One Octet
+
+The range is:
+
+```text
+0–255
+```
+
+We cannot directly write:
+
+```regex
+\d{1,3}
+```
+
+because that would allow:
+
+```text
+256
+999
+500
+```
+
+Therefore, we split the range into smaller logical ranges.
+
+```text
+0–9
+10–99
+100–199
+200–249
+250–255
+```
+
+This is the same numeric-range engineering method used later for date validation.
+
+---
+
+# Step 3 – Range 0–9
+
+Single digits:
+
+```text
+0
+1
+2
+...
+9
+```
+
+Regex:
+
+```regex
+\d
+```
+
+---
+
+# Step 4 – Range 10–99
+
+First digit cannot be zero.
+
+```regex
+[1-9]\d
+```
+
+This matches:
+
+```text
+10
+11
+...
+99
+```
+
+It does not match:
+
+```text
+00
+01
+09
+```
+
+This also prevents the leading-zero representation.
+
+---
+
+# Step 5 – Range 100–199
+
+The first digit is always:
+
+```text
+1
+```
+
+The remaining two digits can be anything.
+
+Regex:
+
+```regex
+1\d{2}
+```
+
+Matches:
+
+```text
+100
+101
+...
+199
+```
+
+---
+
+# Step 6 – Range 200–249
+
+The first digit is:
+
+```text
+2
+```
+
+The second digit can only be:
+
+```text
+0–4
+```
+
+The last digit can be anything.
+
+Regex:
+
+```regex
+2[0-4]\d
+```
+
+Matches:
+
+```text
+200
+201
+...
+249
+```
+
+---
+
+# Step 7 – Range 250–255
+
+The first two digits are:
+
+```text
+25
+```
+
+The final digit can only be:
+
+```text
+0–5
+```
+
+Regex:
+
+```regex
+25[0-5]
+```
+
+Matches:
+
+```text
+250
+251
+252
+253
+254
+255
+```
+
+---
+
+# Step 8 – Combine the Octet Ranges
+
+We now have:
+
+```regex
+\d
+```
+
+```regex
+[1-9]\d
+```
+
+```regex
+1\d{2}
+```
+
+```regex
+2[0-4]\d
+```
+
+```regex
+25[0-5]
+```
+
+Using alternation:
+
+```regex
+(25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)
+```
+
+This represents:
+
+```text
+0–9
+10–99
+100–199
+200–249
+250–255
+```
+
+---
+
+# Step 9 – Four Octets
+
+Now repeat the same octet pattern four times.
+
+Separate each octet using a literal dot:
+
+```regex
+\.
+```
+
+Final IPv4 regex:
+
+```regex
+^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)$
+```
+
+---
+
+# Testing Strategy
+
+Never test only valid inputs.
+
+Always test the boundaries.
+
+## Valid Cases
+
+```text
+0.0.0.0
+1.1.1.1
+9.9.9.9
+10.10.10.10
+99.99.99.99
+100.100.100.100
+199.199.199.199
+200.200.200.200
+249.249.249.249
+250.250.250.250
+255.255.255.255
+192.168.1.10
+```
+
+---
+
+## Invalid Cases
+
+```text
+256.1.1.1
+1.256.1.1
+1.1.256.1
+1.1.1.256
+01.1.1.1
+001.1.1.1
+192.168.001.010
+999.999.999.999
+1.1.1
+1.1.1.1.1
+```
+
+---
+
+# Engineering Lessons
+
+The major lesson was:
+
+> Never try to validate `0–255` as simply `\d{1,3}`.
+
+Instead:
+
+```text
+Numeric Range
+      ↓
+Split into logical ranges
+      ↓
+Build each range
+      ↓
+Combine using alternation
+```
+
+This exact methodology was reused for:
+
+- Month `01–12`
+- Day `01–31`
+- Year `1900–2099`
+- Calendar validation
+
+---
+
+# Final Reference Code
+
+```python
+import re
+
+text = input("Enter IPv4 address: ")
+
+pattern = r"^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)$"
+
+result = re.fullmatch(pattern, text)
+
+if result:
+    print("Valid IPv4 address")
+else:
+    print("Invalid IPv4 address")
+```
+
+---
+
+# Question 3 – MAC Address Validation
+
+---
+
+## Problem Statement
+
+Validate MAC addresses using Python Regular Expressions.
+
+We deliberately handled the three requested representations separately.
+
+```text
+Linux / Unix
+Windows
+Cisco
+```
+
+We did **NOT** combine them into one regex.
+
+---
+
+# Part A – Linux / Unix Format
+
+## Format
+
+```text
+AA:BB:CC:DD:EE:FF
+```
+
+A MAC address contains six groups.
+
+Each group contains two hexadecimal characters.
+
+---
+
+# Step 1 – Understand Hexadecimal
+
+Allowed characters:
+
+```text
+0–9
+A–F
+a–f
+```
+
+Regex:
+
+```regex
+[A-Fa-f0-9]
+```
+
+---
+
+# Step 2 – Two Hexadecimal Characters
+
+Requirement:
+
+```text
+AA
+```
+
+Regex:
+
+```regex
+[A-Fa-f0-9]{2}
+```
+
+This became our reusable MAC group.
+
+---
+
+# Step 3 – Six Groups
+
+The Linux representation uses:
+
+```text
+:
+```
+
+as the separator.
+
+Final Linux regex:
+
+```regex
+^([A-Fa-f0-9]{2}):([A-Fa-f0-9]{2}):([A-Fa-f0-9]{2}):([A-Fa-f0-9]{2}):([A-Fa-f0-9]{2}):([A-Fa-f0-9]{2})$
+```
+
+---
+
+# Part B – Windows Format
+
+## Format
+
+```text
+AA-BB-CC-DD-EE-FF
+```
+
+The hexadecimal group remains:
+
+```regex
+[A-Fa-f0-9]{2}
+```
+
+Only the separator changes.
+
+```text
+-
+```
+
+Final Windows regex:
+
+```regex
+^([A-Fa-f0-9]{2})-([A-Fa-f0-9]{2})-([A-Fa-f0-9]{2})-([A-Fa-f0-9]{2})-([A-Fa-f0-9]{2})-([A-Fa-f0-9]{2})$
+```
+
+---
+
+# Part C – Cisco Format
+
+## Format
+
+```text
+AAAA.BBBB.CCCC
+```
+
+Cisco uses three groups.
+
+Each group contains four hexadecimal characters.
+
+---
+
+# Step 1 – Four Hexadecimal Characters
+
+```regex
+[A-Fa-f0-9]{4}
+```
+
+---
+
+# Step 2 – Three Groups
+
+The separator is:
+
+```text
+.
+```
+
+Because `.` is a regex metacharacter, we escape it:
+
+```regex
+\.
+```
+
+Final Cisco regex:
+
+```regex
+^([A-Fa-f0-9]{4})\.([A-Fa-f0-9]{4})\.([A-Fa-f0-9]{4})$
+```
+
+---
+
+# Testing Strategy
+
+## Linux Valid
+
+```text
+00:11:22:33:44:55
+AA:BB:CC:DD:EE:FF
+aa:bb:cc:dd:ee:ff
+A1:B2:C3:D4:E5:F6
+```
+
+## Linux Invalid
+
+```text
+00:11:22:33:44
+00:11:22:33:44:55:66
+GG:11:22:33:44:55
+00-11-22-33-44-55
+```
+
+---
+
+## Windows Valid
+
+```text
+00-11-22-33-44-55
+AA-BB-CC-DD-EE-FF
+aa-bb-cc-dd-ee-ff
+A1-B2-C3-D4-E5-F6
+```
+
+## Windows Invalid
+
+```text
+00-11-22-33-44
+00-11-22-33-44-55-66
+GG-11-22-33-44-55
+00:11:22:33:44:55
+```
+
+---
+
+## Cisco Valid
+
+```text
+0011.2233.4455
+AABB.CCDD.EEFF
+aabb.ccdd.eeff
+A1B2.C3D4.E5F6
+```
+
+## Cisco Invalid
+
+```text
+0011.2233
+0011.2233.4455.6677
+GG11.2233.4455
+00:11:22:33:44:55
+```
+
+---
+
+# Engineering Lessons
+
+The important observation was:
+
+```text
+Same MAC data
+      ↓
+Different presentation format
+      ↓
+Different regex separator/group structure
+```
+
+Linux:
+
+```text
+XX:XX:XX:XX:XX:XX
+```
+
+Windows:
+
+```text
+XX-XX-XX-XX-XX-XX
+```
+
+Cisco:
+
+```text
+XXXX.XXXX.XXXX
+```
+
+We intentionally kept these validators separate rather than creating one complicated combined expression.
+
+> Optimization of these three patterns was discussed but deliberately postponed for later documentation.
+
+---
+
+# Final Reference Code
+
+## Linux
+
+```python
+import re
+
+text = input("Enter the MAC address: ")
+
+group = r"([A-Fa-f0-9]{2})"
+
+pattern = rf"^{group}:{group}:{group}:{group}:{group}:{group}$"
+
+result = re.fullmatch(pattern, text)
+
+if result:
+    print("Valid MAC address")
+else:
+    print("Invalid MAC address")
+```
+
+## Windows
+
+```python
+import re
+
+text = input("Enter the MAC address: ")
+
+group = r"([A-Fa-f0-9]{2})"
+
+pattern = rf"^{group}-{group}-{group}-{group}-{group}-{group}$"
+
+result = re.fullmatch(pattern, text)
+
+if result:
+    print("Valid MAC address")
+else:
+    print("Invalid MAC address")
+```
+
+## Cisco
+
+```python
+import re
+
+text = input("Enter the MAC address: ")
+
+group = r"([A-Fa-f0-9]{4})"
+
+pattern = rf"^{group}\.{group}\.{group}$"
+
+result = re.fullmatch(pattern, text)
+
+if result:
+    print("Valid MAC address")
+else:
+    print("Invalid MAC address")
+```
+
+---
+
+# Question 4 – Password Validation
+
+---
+
+## Problem Statement
+
+Validate a password using Python Regular Expressions.
+
+---
+
+## Business Requirements
+
+The password must:
+
+- Contain at least 8 characters.
+- Contain at least one uppercase letter.
+- Contain at least one lowercase letter.
+- Contain at least one digit.
+- Contain at least one special character.
+- Not contain spaces or other whitespace.
+
+---
+
+# Step 1 – Positive Lookahead
+
+The first requirement we solved was:
+
+```text
+At least one uppercase letter
+```
+
+Initial thought:
+
+```regex
+(?=[A-Z]{1,})
+```
+
+The issue was that this only checks from the current position.
+
+We changed it to:
+
+```regex
+(?=.*[A-Z])
+```
+
+Meaning:
+
+```text
+Search anywhere
++
+Find at least one uppercase letter
+```
+
+---
+
+# Step 2 – Lowercase
+
+```regex
+(?=.*[a-z])
+```
+
+Meaning:
+
+> At least one lowercase letter must exist somewhere.
+
+---
+
+# Step 3 – Digit
+
+```regex
+(?=.*\d)
+```
+
+Meaning:
+
+> At least one digit must exist somewhere.
+
+---
+
+# Step 4 – Special Character
+
+We considered a broad solution:
+
+```regex
+(?=.*[^\w])
+```
+
+But this can also match whitespace.
+
+Since the requirement explicitly says a special character is required and whitespace is forbidden, we chose an explicit special-character set.
+
+```regex
+(?=.*[!@#$%^&*()_+=-])
+```
+
+---
+
+# Step 5 – Minimum Length
+
+Requirement:
+
+```text
+At least 8 characters
+```
+
+Regex:
+
+```regex
+.{8,}
+```
+
+Meaning:
+
+```text
+Any character
+at least 8 times
+```
+
+---
+
+# Step 6 – No Whitespace
+
+Negative lookahead:
+
+```regex
+(?!.*\s)
+```
+
+Meaning:
+
+> Reject if whitespace occurs anywhere.
+
+---
+
+# Final Password Regex
+
+```regex
+^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+=-])(?!.*\s).{8,}$
+```
+
+---
+
+# Testing Strategy
+
+## Valid
+
+```text
+Password1@
+P@ssword123
+Admin@2025
+Hello@123
+Abcdef1!
+Qwerty9#
+Strong_Pass1+
+```
+
+## Invalid
+
+Less than 8 characters:
+
+```text
+Pass1@
+Ab1@
+```
+
+No uppercase:
+
+```text
+password1@
+hello123#
+```
+
+No lowercase:
+
+```text
+PASSWORD1@
+ADMIN@123
+```
+
+No digit:
+
+```text
+Password@
+HelloWorld#
+```
+
+No special character:
+
+```text
+Password1
+Admin2025
+```
+
+Whitespace:
+
+```text
+Pass word1@
+Admin @123
+Password 1!
+```
+
+---
+
+# Engineering Lessons
+
+The main lesson was the difference between:
+
+```text
+Must contain
+```
+
+and:
+
+```text
+Must NOT contain
+```
+
+For "must contain":
+
+```regex
+(?=.*PATTERN)
+```
+
+For "must NOT contain":
+
+```regex
+(?!.*PATTERN)
+```
+
+This is one of the most reusable patterns in validation regex.
+
+---
+
+# Final Reference Code
+
+```python
+import re
+
+text = input("Enter password: ")
+
+pattern = r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+=-])(?!.*\s).{8,}$"
+
+result = re.fullmatch(pattern, text)
+
+if result:
+    print("Valid password")
+else:
+    print("Invalid password")
+```
+
+---
+
+# Question 5 – Mobile Number Validation
+
+---
+
+## Problem Statement
+
+Validate an Indian mobile number using Python Regular Expressions.
+
+---
+
+## Business Requirements
+
+For this exercise:
+
+- Mobile number contains exactly 10 digits.
+- First digit must be `6–9`.
+- Optional country code may be:
+  - `91`
+  - `+91`
+- The country code is optional.
+
+Accepted formats:
+
+```text
+9876543210
+919876543210
++919876543210
+```
+
+---
+
+# Step 1 – Country Code
+
+We first thought about:
+
+```regex
+(+91|91|?)
+```
+
+This was incorrect.
+
+Why?
+
+The `+` character is a regex metacharacter.
+
+A literal plus should be written:
+
+```regex
+\+91
+```
+
+Also,
+
+```text
+?
+```
+
+does not mean "nothing" in an alternation.
+
+Instead, the whole group should be optional.
+
+Correct:
+
+```regex
+(91|\+91)?
+```
+
+Meaning:
+
+```text
+91
+OR
++91
+OR
+nothing
+```
+
+---
+
+# Step 2 – Mobile Number
+
+The first digit must be:
+
+```text
+6–9
+```
+
+Regex:
+
+```regex
+[6-9]
+```
+
+Remaining nine characters:
+
+```regex
+\d{9}
+```
+
+Combined:
+
+```regex
+[6-9]\d{9}
+```
+
+---
+
+# Step 3 – Combine
+
+Country code:
+
+```regex
+(91|\+91)?
+```
+
+Mobile number:
+
+```regex
+[6-9]\d{9}
+```
+
+Final:
+
+```regex
+^(91|\+91)?[6-9]\d{9}$
+```
+
+---
+
+# Testing Strategy
+
+## Valid
+
+```text
+9876543210
+919876543210
++919876543210
+8123456789
+7012345678
+6123456789
+```
+
+## Invalid
+
+```text
+5123456789
+0123456789
+987654321
+98765432101
++929876543210
+91919876543210
++91987654321
+```
+
+---
+
+# Engineering Lessons
+
+Optional group:
+
+```regex
+(A|B)?
+```
+
+means:
+
+```text
+A
+OR
+B
+OR
+nothing
+```
+
+Also remember:
+
+```regex
+\+
+```
+
+matches a literal `+`.
+
+---
+
+# Final Reference Code
+
+```python
+import re
+
+text = input("Enter mobile number: ")
+
+pattern = r"^(91|\+91)?[6-9]\d{9}$"
+
+result = re.fullmatch(pattern, text)
+
+if result:
+    print("Valid mobile number")
+else:
+    print("Invalid mobile number")
+```
+
+---
+
+# Question 6 – Date Validation
+
+---
+
+## Problem Statement
+
+Validate dates using Python Regular Expressions.
+
+---
+
+## Frozen Business Requirements
+
+For this exercise we selected:
+
+```text
+Format: MM/DD/YYYY
+Year: 1900–2099
+```
+
+Calendar rules:
+
+```text
+31-day months:
+01, 03, 05, 07, 08, 10, 12
+
+30-day months:
+04, 06, 09, 11
+
+February:
+01–28 normally
+01–29 in leap years
+```
+
+Leap-year rules:
+
+```text
+Divisible by 400 → leap year
+Divisible by 100 → not leap year
+Divisible by 4   → leap year
+```
+
+Therefore:
+
+```text
+1900 → not leap
+2000 → leap
+2024 → leap
+2023 → not leap
+```
+
+---
+
+# Step 1 – Month Validation
+
+Requirement:
+
+```text
+01–12
+```
+
+Split:
+
+```text
+01–09
+10–12
+```
+
+Regex:
+
+```regex
+(0[1-9]|1[0-2])
+```
+
+### Mistake
+
+We initially wrote:
+
+```regex
+(0[1-9]|1[1-2])
+```
+
+This excluded:
+
+```text
+10
+```
+
+Correct:
+
+```regex
+(0[1-9]|1[0-2])
+```
+
+---
+
+# Step 2 – Basic Day Validation
+
+Requirement:
+
+```text
+01–31
+```
+
+Split:
+
+```text
+01–09
+10–19
+20–29
+30–31
+```
+
+Regex:
+
+```regex
+(0[1-9]|1[0-9]|2[0-9]|3[0-1])
+```
+
+### Mistake
+
+We initially used:
+
+```regex
+(0[0-9]|1[0-9]|2[0-9]|3[0-1])
+```
+
+which allowed:
+
+```text
+00
+```
+
+We corrected it to:
+
+```regex
+0[1-9]
+```
+
+---
+
+# Step 3 – Year Validation
+
+Requirement:
+
+```text
+1900–2099
+```
+
+Initial attempt:
+
+```regex
+(1\d{3})|(20\d{2})
+```
+
+Problem:
+
+```text
+1000
+1200
+1500
+1899
+```
+
+could match the first branch.
+
+Correct:
+
+```regex
+(19\d{2}|20\d{2})
+```
+
+---
+
+# Step 4 – Basic MM/DD/YYYY Regex
+
+After assembling month, day, and year:
+
+```regex
+^(0[1-9]|1[0-2])/(0[1-9]|1[0-9]|2[0-9]|3[0-1])/(19\d{2}|20\d{2})$
+```
+
+This checks:
+
+```text
+Month range
+Day range
+Year range
+Separators
+Complete string
+```
+
+But it still accepts dates such as:
+
+```text
+02/31/2025
+04/31/2025
+02/29/2023
+```
+
+because month/day relationships are not yet represented.
+
+---
+
+# Step 5 – 31-Day Months
+
+Months:
+
+```text
+01, 03, 05, 07, 08, 10, 12
+```
+
+Regex:
+
+```regex
+(01|03|05|07|08|10|12)
+```
+
+Day range:
+
+```regex
+(0[1-9]|1[0-9]|2[0-9]|3[0-1])
+```
+
+Complete branch:
+
+```regex
+(01|03|05|07|08|10|12)/(0[1-9]|1[0-9]|2[0-9]|3[0-1])/(19\d{2}|20\d{2})
+```
+
+---
+
+# Step 6 – 30-Day Months
+
+Months:
+
+```text
+04, 06, 09, 11
+```
+
+Day range:
+
+```text
+01–30
+```
+
+We derived:
+
+```regex
+(0[1-9]|1[0-9]|2[0-9]|30)
+```
+
+Complete branch:
+
+```regex
+(04|06|09|11)/(0[1-9]|1[0-9]|2[0-9]|30)/(19\d{2}|20\d{2})
+```
+
+---
+
+# Step 7 – February 01–28
+
+February is:
+
+```text
+02
+```
+
+Normal maximum day:
+
+```text
+28
+```
+
+We derived:
+
+```regex
+(0[1-9]|1[0-9]|2[0-8])
+```
+
+Complete branch:
+
+```regex
+02/(0[1-9]|1[0-9]|2[0-8])/(19\d{2}|20\d{2})
+```
+
+---
+
+# Step 8 – Leap-Year Logic
+
+The Gregorian rule is:
+
+```text
+Divisible by 400 → leap
+Otherwise divisible by 100 → not leap
+Otherwise divisible by 4 → leap
+```
+
+Within our restricted range:
+
+```text
+1900–2099
+```
+
+we split into:
+
+```text
+1900–1999
+2000–2099
+```
+
+For two-digit endings divisible by 4:
+
+```regex
+([02468][048]|[13579][26])
+```
+
+For `1900–1999`, excluding `1900`:
+
+```regex
+19(?!00)([02468][048]|[13579][26])
+```
+
+For `2000–2099`:
+
+```regex
+20([02468][048]|[13579][26])
+```
+
+Combined:
+
+```regex
+(?:19(?!00)(?:[02468][048]|[13579][26])|20(?:[02468][048]|[13579][26]))
+```
+
+---
+
+# Step 9 – February 29
+
+February 29 is valid only when the year is a leap year.
+
+Regex:
+
+```regex
+02/29/(?:19(?!00)(?:[02468][048]|[13579][26])|20(?:[02468][048]|[13579][26]))
+```
+
+Valid:
+
+```text
+02/29/2024
+02/29/2000
+02/29/1904
+02/29/1996
+```
+
+Invalid:
+
+```text
+02/29/2023
+02/29/1900
+02/29/2100
+```
+
+---
+
+# Final Calendar-Aware Date Regex
+
+```python
+pattern = r"^(?:(?:01|03|05|07|08|10|12)/(?:0[1-9]|1[0-9]|2[0-9]|3[0-1])/(?:19\d{2}|20\d{2})|(?:04|06|09|11)/(?:0[1-9]|1[0-9]|2[0-9]|30)/(?:19\d{2}|20\d{2})|02/(?:0[1-9]|1[0-9]|2[0-8])/(?:19\d{2}|20\d{2})|02/29/(?:19(?!00)(?:[02468][048]|[13579][26])|20(?:[02468][048]|[13579][26])))$"
+```
+
+---
+
+# Date Testing Strategy
+
+## Valid
+
+```text
+01/01/2025
+01/31/2025
+03/31/2025
+04/30/2025
+06/30/2025
+09/30/2025
+11/30/2025
+02/28/2025
+02/29/2024
+02/29/2000
+02/29/1904
+12/31/2099
+```
+
+## Invalid
+
+```text
+00/01/2025
+13/01/2025
+01/00/2025
+01/32/2025
+04/31/2025
+06/31/2025
+09/31/2025
+11/31/2025
+02/29/2023
+02/30/2025
+02/31/2025
+02/29/1900
+01-01-2025
+1/01/2025
+01/1/2025
+```
+
+---
+
+# Industry Engineering Note
+
+The calendar-aware regex is useful for learning regex engineering.
+
+However, in production Python, a cleaner architecture is normally:
+
+```text
+Input
+  ↓
+Regex
+  ↓
+Basic structure / format validation
+  ↓
+Python date library
+  ↓
+Actual calendar validation
+```
+
+Regex handles structure well.
+
+A date library is better suited to actual calendar rules such as:
+
+- Month-specific day limits.
+- Leap years.
+- February 29.
+
+The engineering principle is:
+
+> Use each tool for the responsibility it handles well and can maintain reliably.
+
+---
+
+# Final Reference Code
+
+```python
+import re
+
+text = input("Enter date: ")
+
+pattern = r"^(?:(?:01|03|05|07|08|10|12)/(?:0[1-9]|1[0-9]|2[0-9]|3[0-1])/(?:19\d{2}|20\d{2})|(?:04|06|09|11)/(?:0[1-9]|1[0-9]|2[0-9]|30)/(?:19\d{2}|20\d{2})|02/(?:0[1-9]|1[0-9]|2[0-8])/(?:19\d{2}|20\d{2})|02/29/(?:19(?!00)(?:[02468][048]|[13579][26])|20(?:[02468][048]|[13579][26])))$"
+
+result = re.fullmatch(pattern, text)
+
+if result:
+    print("Valid date")
+else:
+    print("Invalid date")
+```
+
+---
+
+# Overall Engineering Lessons from Questions 2–6
+
+The same methodology kept appearing:
+
+```text
+Requirement
+    ↓
+Break into components
+    ↓
+Identify matching rules
+    ↓
+Identify restriction rules
+    ↓
+Split numeric ranges
+    ↓
+Build small regex components
+    ↓
+Combine components
+    ↓
+Test boundary values
+    ↓
+Test valid cases
+    ↓
+Test invalid cases
+    ↓
+Optimize only after understanding
+```
+
+## Important Regex Patterns
+
+### Alternation
+
+```regex
+(A|B)
+```
+
+Means:
+
+```text
+A OR B
+```
+
+### Positive Lookahead
+
+```regex
+(?=.*PATTERN)
+```
+
+Means:
+
+> PATTERN must exist somewhere.
+
+### Negative Lookahead
+
+```regex
+(?!.*PATTERN)
+```
+
+Means:
+
+> PATTERN must not exist anywhere.
+
+### Optional Group
+
+```regex
+(A|B)?
+```
+
+Means:
+
+```text
+A
+OR
+B
+OR
+nothing
+```
+
+### Character Classes
+
+```regex
+[A-Z]
+[a-z]
+[0-9]
+[6-9]
+[A-Fa-f0-9]
+```
+
+### Quantifiers
+
+```regex
+\d{9}
+```
+
+Exactly nine digits.
+
+```regex
+.{8,}
+```
+
+At least eight characters.
+
+### Anchors
+
+```regex
+^
+$
+```
+
+Used to validate the complete string.
+
+---
+
+# Validation Progress
+
+| Question | Problem | Status |
+|---|---|---|
+| 1 | Email Validation | ✅ Completed |
+| 2 | IPv4 Validation | ✅ Completed |
+| 3 | MAC Address Validation | ✅ Completed |
+| 4 | Password Validation | ✅ Completed |
+| 5 | Mobile Number Validation | ✅ Completed |
+| 6 | Date Validation | ✅ Completed |
+
+---
+
