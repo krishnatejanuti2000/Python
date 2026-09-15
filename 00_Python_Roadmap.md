@@ -654,23 +654,134 @@ After completing this module, you will be able to:
 
 # Module 9 — Object-Oriented Programming
 
-Focus on practical automation.
 
+## Core OOP Concepts
+
+- OOP Fundamentals
 - Classes
 - Objects
+- Attributes
+- Instance Attributes
+- Class Attributes
+- Methods
+- `self`
 - Constructors
+- `__init__()`
+- Object Initialization
+- Class vs Instance State
+- Attribute Lookup
+
+## Encapsulation
+
 - Encapsulation
+- Public Attributes / Methods
+- Protected Attributes / Methods
+- Private Attributes / Methods
+- Name Mangling
+- Properties
+- Getters / Setters
+- Controlled Access
+
+## Methods
+
+- Instance Methods
+- Class Methods
+- Static Methods
+- Method Parameters
+- Return Values
+
+## Special Methods
+
+- Dunder Methods
+- `__str__()`
+- `__repr__()`
+- `__eq__()`
+- `__len__()`
+- Special Method Basics
+
+## Object Identity
+
+- Object Identity
+- `id()`
+- `is`
+- `==`
+- Equality vs Identity
+
+## Inheritance
+
 - Inheritance
+- Parent / Base Classes
+- Child / Derived Classes
+- Method Inheritance
+- Method Overriding
+- `super()`
+- Constructor Inheritance
+- `isinstance()`
+- `issubclass()`
+- Types of Inheritance
+- Multiple Inheritance
+- Method Resolution Order (MRO)
+
+## Polymorphism
+
 - Polymorphism
+- Method Overriding
+- Duck Typing
+- Common Interfaces
+- Practical Polymorphism
+
+## Abstraction
+
 - Abstraction
+- Abstract Classes
+- `ABC`
+- `@abstractmethod`
+- Abstract vs Concrete Classes
+
+## Composition & Object Relationships
+
+- Composition
+- Aggregation
+- HAS-A vs IS-A
+- Composition vs Inheritance
+- Dependency Injection
+
+## OOP Design
+
+- Object State Management
+- Class Responsibility
+- Single Responsibility
+- High Cohesion
+- Low Coupling
+- Favor Composition Over Inheritance
+- Reusable Class Design
+- Testable Class Design
+- Common OOP Pitfalls
+
+## OOP + Exception Handling
+
+- Exceptions in Methods
+- Validation in Classes
+- Custom Exceptions
+- Exception Propagation
+- Resource Management
 
 ## Automation-Oriented Design
 
-- LogParser
-- TestRunner
-- ReportGenerator
-- StorageDevice
-- Validator Classes
+- `StorageDevice`
+- `LogParser`
+- `TestRunner`
+- `Validator`
+- `ReportGenerator`
+- Object Interaction
+- Integrated Automation Design
+
+## Practical OOP Project
+
+- Storage Automation OOP Design
+- Class Interaction
+- End-to-End OOP Implementation
+
 
 ---
 
