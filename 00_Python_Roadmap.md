@@ -1,3 +1,1024 @@
+# FINAL LOCKED — STORAGE TEST AUTOMATION LEARNING SYLLABUS
+
+## Purpose
+
+This syllabus is specifically for developing the skills required to use **Python and Pytest as Storage Test Automation tools** for:
+
+* Project 2 — Enterprise Drive / NVMe SSD Validation
+* Project 1 — Enterprise Storage Platform / Feature Validation
+
+The objective is **not to automate every validation**.
+
+Automation will focus on validations where repetition, scale, regression value, objective validation, long-running execution, or diagnostic collection make automation valuable.
+
+The blocks will be followed strictly in order.
+
+---
+
+# BLOCK 1 — PYTHON FOR AUTOMATION
+
+## 1.1 Python Automation Fundamentals
+
+* Writing reusable automation functions
+* Function design for automation
+* Arguments and return values
+* Reusable utility functions
+* Exception-safe function design
+* Modules and packages
+* Importing reusable utilities
+
+## 1.2 Filesystem Automation
+
+* `os`
+* `pathlib`
+* `shutil`
+* `tempfile`
+* Directory creation
+* File existence checks
+* File copying / moving
+* File cleanup
+* Recursive directory traversal
+* Temporary test artifacts
+* Log and evidence directory handling
+
+## 1.3 Pattern-Based File Handling
+
+* `glob`
+* `fnmatch`
+* Finding log files
+* Filtering test artifacts
+* Recursive file discovery
+
+## 1.4 Structured Data
+
+* JSON
+* CSV
+* YAML
+* Reading structured data
+* Writing structured data
+* Nested dictionaries/lists
+* Missing fields
+* Invalid data handling
+
+## 1.5 Configuration
+
+* Configuration files
+* `configparser`
+* Configuration vs source code
+* Environment-specific configuration
+* Device/test configuration
+* Threshold configuration
+
+## 1.6 Logging
+
+* `logging`
+* Log levels
+* Handlers
+* Formatters
+* Timestamps
+* Module-level logging
+* Exception logging
+* Command execution logging
+
+## 1.7 CLI Automation
+
+* `argparse`
+* Positional arguments
+* Optional arguments
+* Flags
+* Defaults
+* Argument validation
+
+## 1.8 Supporting Utilities
+
+* `datetime`
+* `time`
+* Environment variables
+* `platform`
+* Type hints — practical level
+* Context managers and cleanup
+
+---
+
+# BLOCK 2 — LINUX & REMOTE SYSTEM AUTOMATION
+
+## 2.1 Linux Command Automation
+
+* External command execution
+* Command arguments
+* Process execution model
+* Process completion
+* Exit status
+* Local command execution
+
+## 2.2 `subprocess`
+
+* `subprocess.run()`
+* `subprocess.Popen`
+* stdout
+* stderr
+* return code
+* `capture_output`
+* `text`
+* Command arguments
+* Environment handling
+* Working directory
+* Shell vs non-shell execution
+
+## 2.3 Command Failure Handling
+
+* Non-zero return codes
+* Command execution exceptions
+* `CalledProcessError`
+* Timeout handling
+* `TimeoutExpired`
+* Preserving stdout/stderr
+* Failure information
+
+## 2.4 Process Management
+
+* Process lifecycle
+* PID
+* Waiting for processes
+* Process termination
+* Signals — practical level
+* Cleanup
+* Long-running commands
+
+## 2.5 Retry and Recovery
+
+* Transient failures
+* Retry conditions
+* Retry count
+* Retry interval
+* Basic backoff
+* When not to retry
+* Avoiding hidden failures
+* Safe retry design
+
+## 2.6 SSH Fundamentals
+
+* SSH architecture
+* Local vs remote execution
+* Authentication
+* SSH keys / passwords
+* Host verification
+* Connection lifecycle
+* Remote command execution
+
+## 2.7 Paramiko
+
+* `SSHClient`
+* `connect()`
+* `exec_command()`
+* stdin
+* stdout
+* stderr
+* Remote exit status
+* Command timeout
+* Connection errors
+* Connection cleanup
+* SFTP basics
+* Remote file retrieval
+* Remote log collection
+
+## 2.8 Remote Failure Handling
+
+* Connection timeout
+* Authentication failure
+* Host unavailable
+* Network interruption
+* Remote command failure
+* Remote command timeout
+* Reconnection concepts
+* Preserving remote evidence
+
+---
+
+# BLOCK 3 — STORAGE COMMAND, PARSING & VALIDATION ENGINEERING
+
+## 3.1 Storage Command Automation
+
+Learn how Python interacts with storage tools such as:
+
+* `nvme`
+* `smartctl`
+* `lsblk`
+* `lspci`
+* `dmesg`
+* `journalctl`
+* `fio`
+* Required storage-platform/vendor CLI tools
+
+For each tool:
+
+* Purpose
+* Command execution
+* Output
+* Return code
+* Parsing
+* Validation
+* Evidence
+
+## 3.2 Command Output Processing
+
+* Raw text processing
+* Lines
+* Tokens
+* Fields
+* Whitespace normalization
+* Filtering
+* Data extraction
+* Defensive parsing
+
+## 3.3 Regex for Automation
+
+Apply existing regex knowledge to:
+
+* Device identification
+* Firmware version extraction
+* Status extraction
+* Error matching
+* Log parsing
+* Pattern validation
+
+## 3.4 JSON Output Parsing
+
+* Nested dictionaries
+* Nested lists
+* Field extraction
+* Missing fields
+* Malformed JSON
+* Defensive parsing
+* Structured command results
+
+## 3.5 Storage Validation Logic
+
+* Expected vs actual
+* Presence checks
+* State checks
+* Version checks
+* Threshold checks
+* Range validation
+* Mandatory fields
+* Forbidden conditions
+* Compound validation conditions
+
+## 3.6 Result Handling
+
+Understand the difference between:
+
+* Command result
+* Validation result
+* Test result
+* Product failure
+* Automation failure
+* Infrastructure failure
+
+## 3.7 Evidence Collection
+
+Capture:
+
+* Test name
+* Target device/system
+* Timestamp
+* Command
+* stdout
+* stderr
+* Return code
+* Expected result
+* Actual result
+* PASS / FAIL / ERROR
+* Diagnostic logs
+
+---
+
+# BLOCK 4 — TEST DESIGN & AUTOMATION SELECTION
+
+## 4.1 Test Automation Fundamentals
+
+* Manual testing vs automation
+* What automation solves
+* Automation limitations
+* Automation maintenance cost
+* Test repeatability
+* Test determinism
+
+## 4.2 Selecting What to Automate
+
+Evaluate:
+
+* Repetition
+* Frequency
+* Scale
+* Regression value
+* Execution time
+* Objective validation
+* Stability
+* Safety
+* Maintenance effort
+
+Understand the difference between:
+
+* Manual validation
+* Semi-automated validation
+* Fully automated validation
+* Exploratory testing
+
+## 4.3 Manual Test → Automated Test
+
+Learn how to convert:
+
+```text
+Requirement
+    ↓
+Test Scenario
+    ↓
+Preconditions
+    ↓
+Action
+    ↓
+Expected Result
+    ↓
+Automation Candidate
+    ↓
+Automation Implementation
+    ↓
+Evidence
+    ↓
+Result
+```
+
+## 4.4 Test Data
+
+* Test inputs
+* Expected values
+* Thresholds
+* Device inventory
+* Configuration data
+* Firmware versions
+* Workload parameters
+* Environment-specific values
+
+## 4.5 Automation Scope
+
+Learn how to identify:
+
+* Small reusable checks
+* Large validation workflows
+* Regression suites
+* Qualification suites
+* Long-duration tests
+* Matrix-based testing
+* Diagnostic collection
+
+---
+
+# BLOCK 5 — PYTEST FOR STORAGE VALIDATION
+
+## 5.1 Pytest Fundamentals
+
+* What pytest is
+* Test discovery
+* Naming conventions
+* Test modules
+* Test functions
+* Test classes
+* Running tests
+* Collection
+* PASS
+* FAIL
+* ERROR
+* SKIP
+
+## 5.2 Assertions
+
+* Basic assertions
+* Comparison assertions
+* Membership
+* Boolean validation
+* Assertion messages
+* Exception assertions
+* Approximate comparisons
+
+## 5.3 Fixtures
+
+* Why fixtures exist
+* Built-in fixtures
+* Custom fixtures
+* Setup
+* Teardown
+* Fixture dependencies
+* Cleanup
+
+## 5.4 Fixture Scope
+
+* Function
+* Class
+* Module
+* Package
+* Session
+* Choosing appropriate scope
+* Resource lifetime
+
+## 5.5 `conftest.py`
+
+* Shared fixtures
+* Fixture discovery
+* Common test setup
+* Shared configuration
+* Avoiding duplicated setup
+
+## 5.6 Parameterization
+
+* `pytest.mark.parametrize`
+* Multiple inputs
+* Multiple devices
+* Multiple configurations
+* Multiple firmware versions
+* Multiple workloads
+* Expected results
+* Test IDs
+
+## 5.7 Markers
+
+* Built-in markers
+* Custom markers
+* Smoke
+* Sanity
+* Functional
+* Regression
+* Performance
+* Stress
+* Destructive
+* Environment-dependent tests
+
+## 5.8 Skip / SkipIf / XFail
+
+* Unsupported environment
+* Unavailable hardware
+* Conditional execution
+* Known limitations
+* Expected failures
+
+## 5.9 Mocking
+
+* Why mocking is needed
+* `unittest.mock`
+* Mocking subprocess
+* Mocking command output
+* Mocking return codes
+* Mocking exceptions
+* Mocking timeouts
+* Mocking SSH dependencies
+
+## 5.10 Monkeypatch
+
+* Environment variables
+* Paths
+* Functions
+* External command behavior
+* Controlled replacement during tests
+
+## 5.11 Test Organization
+
+* Test modules
+* Test suites
+* Test folders
+* Utility separation
+* Fixture organization
+* Naming conventions
+* Reusable components
+
+## 5.12 Reporting
+
+* Verbose execution
+* Test summaries
+* JUnit XML
+* HTML reporting basics
+* Failure information
+* Test artifacts
+* Coverage concept
+
+---
+
+# BLOCK 6 — PROFESSIONAL AUTOMATION FRAMEWORK DESIGN
+
+## 6.1 Framework Architecture
+
+Understand:
+
+```text
+Tests
+   ↓
+Fixtures
+   ↓
+Device Abstraction
+   ↓
+Command / SSH Layer
+   ↓
+Parsers
+   ↓
+Validators
+   ↓
+Results
+   ↓
+Logs / Evidence
+   ↓
+Reports
+```
+
+## 6.2 Framework Components
+
+Learn the responsibilities of:
+
+* Command execution layer
+* SSH execution layer
+* Device abstraction
+* Parser
+* Validator
+* Result model
+* Log collector
+* Evidence collector
+* Configuration loader
+
+## 6.3 Reusable vs Project-Specific Components
+
+### Reusable
+
+* Command execution
+* SSH execution
+* Logging
+* Configuration
+* Result handling
+* Evidence collection
+* Common parsing utilities
+
+### Project-specific
+
+* RAID validation
+* LUN validation
+* NVMe namespace validation
+* NVMe health validation
+* Firmware validation
+* FIO validation
+* Recovery validation
+
+## 6.4 Configuration-Driven Automation
+
+* Separate code from test data
+* Separate code from target information
+* Device inventory
+* Thresholds
+* Workload configuration
+* Environment configuration
+
+## 6.5 Failure-Safe Framework Design
+
+* Preconditions
+* Safe execution
+* Cleanup
+* Timeout
+* Retry
+* Exception propagation
+* Evidence preservation
+* Preventing false PASS
+* Product failure vs automation failure
+
+## 6.6 Scalable Framework Design
+
+Design for:
+
+```text
+One Test
+   ↓
+One Device
+   ↓
+Multiple Tests
+   ↓
+Multiple Devices
+   ↓
+Multiple Configurations
+   ↓
+Regression Suite
+```
+
+## 6.7 Large Validation Automation
+
+* Validation workflows
+* Test matrices
+* Parameter-driven execution
+* Repeated execution
+* Long-running execution
+* Regression execution
+* Qualification execution
+
+---
+
+# BLOCK 7 — GIT, CI & REGRESSION AUTOMATION
+
+## 7.1 Git Fundamentals
+
+* Repository
+* Working tree
+* `git status`
+* `git add`
+* `git commit`
+* Branch
+* Merge
+* Pull
+* Push
+* `.gitignore`
+
+## 7.2 Automation Repository Structure
+
+* Source code
+* Tests
+* Fixtures
+* Configuration
+* Logs
+* Reports
+* Generated artifacts
+* Repository hygiene
+
+## 7.3 Jenkins Basics
+
+* Job
+* Parameters
+* Environment
+* Test execution
+* Scheduled execution
+* Logs
+* Artifacts
+* Reports
+* Failure reporting
+
+## 7.4 CI Regression
+
+Understand:
+
+```text
+Build / Firmware
+       ↓
+Test Environment
+       ↓
+Automated Tests
+       ↓
+Logs / Evidence
+       ↓
+Results
+       ↓
+Defect
+       ↓
+Fix
+       ↓
+Regression
+```
+
+## 7.5 Regression Strategy
+
+* Smoke regression
+* Functional regression
+* Full regression
+* Performance regression
+* Firmware regression
+* Failure re-test
+* Fix verification
+
+---
+
+# BLOCK 8 — FINAL AUTOMATION READINESS
+
+## 8.1 End-to-End Automation Understanding
+
+Be able to explain:
+
+```text
+Requirement
+   ↓
+Test Design
+   ↓
+Automation Decision
+   ↓
+Test
+   ↓
+Fixture / Configuration
+   ↓
+Device
+   ↓
+Command / SSH
+   ↓
+Storage Tool
+   ↓
+stdout / stderr / return code
+   ↓
+Parser
+   ↓
+Validator
+   ↓
+Result
+   ↓
+Evidence
+   ↓
+Report
+```
+
+## 8.2 Failure Handling
+
+Be able to distinguish:
+
+* Product failure
+* Storage failure
+* Linux failure
+* Driver failure
+* Environment failure
+* SSH failure
+* Command failure
+* Test failure
+* Automation failure
+* Infrastructure failure
+
+## 8.3 Diagnostic Automation
+
+Understand how automation can collect:
+
+* `nvme smart-log`
+* `nvme error-log`
+* `lspci`
+* `lsblk`
+* `dmesg`
+* `journalctl`
+* Firmware information
+* Device information
+* Test output
+* Configuration information
+
+## 8.4 Automation-Assisted RCA
+
+* Failure reproduction
+* Evidence collection
+* Before/after comparison
+* Failure classification
+* Log correlation
+* Fix verification
+* Regression verification
+
+## 8.5 Final Readiness Assessment
+
+Before project implementation, demonstrate that you can:
+
+* Execute commands with Python
+* Handle stdout/stderr
+* Validate return codes
+* Handle timeout
+* Implement retry appropriately
+* Execute remotely with Paramiko
+* Parse command output
+* Validate expected results
+* Produce evidence
+* Write pytest tests
+* Use fixtures
+* Use parameterization
+* Use markers
+* Mock external dependencies
+* Design reusable framework components
+* Decide what should and should not be automated
+* Explain the complete automation architecture
+
+---
+
+# BLOCK 9 — PROJECT 2
+
+# ENTERPRISE DRIVE / NVMe SSD AUTOMATION
+
+## Framework
+
+```text
+nvme_validation/
+```
+
+## Automation Scope
+
+Only high-value, repeatable and regression-relevant validations will be automated.
+
+### Planned automation areas
+
+* Drive discovery
+* Controller identification
+* Namespace validation
+* Health collection
+* Firmware verification
+* Compatibility validation
+* Functional validation
+* FIO execution
+* FIO result parsing
+* Diagnostic collection
+* Selected reset/recovery validation
+* Regression execution
+
+## Framework Structure
+
+```text
+nvme_validation/
+├── tests/
+├── fixtures/
+├── devices/
+├── nvme/
+├── fio/
+├── firmware/
+├── health/
+├── recovery/
+├── utilities/
+├── logs/
+├── reports/
+└── conftest.py
+```
+
+## Core Flow
+
+```text
+Drive Discovery
+      ↓
+Identification
+      ↓
+Health
+      ↓
+Firmware
+      ↓
+Compatibility
+      ↓
+Functional Validation
+      ↓
+Performance
+      ↓
+Diagnostics
+      ↓
+Recovery
+      ↓
+Regression
+```
+
+---
+
+# BLOCK 10 — PROJECT 1
+
+# ENTERPRISE STORAGE PLATFORM AUTOMATION
+
+## Framework
+
+```text
+storage_validation/
+```
+
+## Automation Scope
+
+Only high-value, repeatable and regression-relevant platform validations will be automated.
+
+### Planned automation areas
+
+* Environment checks
+* Platform readiness checks
+* Device discovery
+* RAID validation
+* Pool validation
+* Volume validation
+* LUN validation
+* Host connectivity validation
+* Selected HA / recovery validation
+* Health checks
+* Firmware verification
+* FIO execution
+* Result validation
+* Diagnostic collection
+* Regression execution
+
+## Framework Structure
+
+```text
+storage_validation/
+├── tests/
+├── devices/
+├── storage/
+├── fio/
+├── firmware/
+├── utilities/
+├── config/
+├── logs/
+└── reports/
+```
+
+## Core Flow
+
+```text
+Platform Ready
+      ↓
+Device / Environment Checks
+      ↓
+RAID
+      ↓
+Pool
+      ↓
+Volume / LUN
+      ↓
+Host Connectivity
+      ↓
+Selected HA / Recovery
+      ↓
+Performance
+      ↓
+Health / Firmware
+      ↓
+Diagnostics
+      ↓
+Regression
+```
+
+---
+
+# FINAL EXECUTION ORDER
+
+```text
+BLOCK 1
+Python for Automation
+        ↓
+BLOCK 2
+Linux & Remote System Automation
+        ↓
+BLOCK 3
+Storage Command, Parsing & Validation Engineering
+        ↓
+BLOCK 4
+Test Design & Automation Selection
+        ↓
+BLOCK 5
+Pytest for Storage Validation
+        ↓
+BLOCK 6
+Professional Automation Framework Design
+        ↓
+BLOCK 7
+Git, CI & Regression Automation
+        ↓
+BLOCK 8
+Final Automation Readiness
+        ↓
+BLOCK 9
+Project 2 — Enterprise Drive / NVMe SSD Automation
+        ↓
+BLOCK 10
+Project 1 — Enterprise Storage Platform Automation
+```
+
+# LOCKED RULES
+
+1. Do not automate every manual validation.
+2. Automate high-value, repeatable, scalable and regression-relevant work.
+3. Learn Python automation before building project frameworks.
+4. Learn `subprocess` deeply.
+5. Learn SSH and Paramiko.
+6. Learn parsing and validation before framework construction.
+7. Learn pytest systematically before creating the real test suites.
+8. Keep Project 1 and Project 2 frameworks separate.
+9. Integrate diagnostics, evidence, troubleshooting and RCA into automation.
+10. Do not add unrelated Python, web, Selenium or generic automation topics.
+11. Do not add new topics unless Project 1, Project 2 or a genuine engineering requirement justifies them.
+12. Follow the blocks strictly in order.
+13. Use the real project requirements to decide what eventually gets automated.
+14. The objective is Storage Test Automation Engineering, not generic Python development.
+
+# END STATE
+
+By the end of this track, the goal is to be able to take a real storage validation requirement and determine:
+
+```text
+What should be tested?
+       ↓
+What should remain manual?
+       ↓
+What should be automated?
+       ↓
+How should it be automated?
+       ↓
+How should it be executed?
+       ↓
+How should the result be validated?
+       ↓
+What evidence should be collected?
+       ↓
+What happens when it fails?
+       ↓
+How is the failure investigated?
+       ↓
+How is the fix regressed?
+```
+
+This is the final locked syllabus.
+
+
+=====================================================================================================
+=====================================================================================================
+=====================================================================================================
+=====================================================================================================
 
 # Python Syllabus
 ## Storage & Linux Automation Oriented Python Roadmap
