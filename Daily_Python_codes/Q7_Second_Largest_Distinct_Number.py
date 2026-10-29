@@ -1,3 +1,31 @@
+n = int(input("enter the size of the list : "))
+
+input_list = []
+
+for i in range(n):
+  input_list.append(int(input(f"enter element{i+1} : ")))
+
+largest = None
+second_largest = None
+
+for i in input_list:
+  if largest is None:
+    largest = i
+  elif i > largest:
+    second_largest = largest
+    largest = i
+  elif i < largest:
+    if second_largest is None or  i > second_largest:
+      second_largest = i
+
+if second_largest is None:
+  print(f"largest is {largest}")
+  print("No second_largest number exist")
+else:
+  print(f"largest is {largest}")
+  print(f"second largest is {second_largest}")
+
+'''
 def find_largest_disctinct(numbers):
 
     if not numbers or len(numbers)<2:
@@ -33,9 +61,7 @@ for i in range(n):
 
 print(find_largest_disctinct(num))
 
-
-
-
+'''
 
 """
 Write a Python program to find the second-largest distinct number in a list of integers.
